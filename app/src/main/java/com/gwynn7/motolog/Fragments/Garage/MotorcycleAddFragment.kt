@@ -2,22 +2,19 @@ package com.gwynn7.motolog.Fragments.Garage
 
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.canhub.cropper.CropImageContract
@@ -32,91 +29,111 @@ import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
 import com.gwynn7.motolog.capitalize
+import com.gwynn7.motolog.databinding.MotorcycleAddBinding
 import com.gwynn7.motolog.dateFromLong
 import com.gwynn7.motolog.showToast
 import java.util.Calendar
 
 class MotorcycleAddFragment : Fragment() {
-    private lateinit var mMotorcycleViewModel: MotorcycleViewModel
+    private var _binding: MotorcycleAddBinding? = null
+    private val binding get() = _binding!!
+    private val mMotorcycleViewModel: MotorcycleViewModel by viewModels()
     private val args by navArgs<MotorcycleAddFragmentArgs>()
     private var currentPath: Path = Path.Add
     private var tempBitmap: Bitmap? = null
     private var bShouldRemoveImage: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view =  inflater.inflate(R.layout.motorcycle_add, container, false)
-        mMotorcycleViewModel = ViewModelProvider(this)[MotorcycleViewModel::class.java]
+    ): View {
+        _binding = MotorcycleAddBinding.inflate(inflater, container, false)
 
-        if(args.currentMotorcycle != null) currentPath = Path.Edit
+        if (args.currentMotorcycle != null) currentPath = Path.Edit
 
-        view.findViewById<TextView>(R.id.textView_bike_distance_pre).text = capitalize(getString(R.string.distance_when_bought, UnitHelper.getDistanceText(requireContext())))
-        val imageAdd = view.findViewById<ImageButton>(R.id.ib_bike_image)
+        binding.textViewBikeDistancePre.text = capitalize(getString(R.string.distance_when_bought, UnitHelper.getDistanceText(requireContext())))
 
-        if(currentPath == Path.Edit) {
+        if (currentPath == Path.Edit) {
             val bike = args.currentMotorcycle!!
-            view.findViewById<EditText>(R.id.et_bike_manufacturer).setText(bike.manufacturer)
-            view.findViewById<EditText>(R.id.et_bike_model).setText(bike.model)
-            view.findViewById<EditText>(R.id.et_bike_alias).setText(bike.alias)
-            view.findViewById<EditText>(R.id.et_bike_year).setText(bike.year.toString())
-            view.findViewById<EditText>(R.id.et_bike_startkm).setText(bike.start_km.toString())
+            binding.etBikeManufacturer.setText(bike.manufacturer)
+            binding.etBikeModel.setText(bike.model)
+            binding.etBikeAlias.setText(bike.alias)
+            binding.etBikeYear.setText(bike.year.toString())
+            binding.etBikeStartkm.setText(bike.start_km.toString())
 
-            if(bike.image != null) imageAdd.setImageURI(bike.image)
-            else imageAdd.setImageResource(R.drawable.add_photo)
+            if (bike.image != null) binding.ibBikeImage.setImageURI(bike.image)
+            else binding.ibBikeImage.setImageResource(R.drawable.add_photo)
         }
 
-        val button = view.findViewById<Button>(R.id.bt_deleteMotorcycle)
-        button.visibility = if(currentPath == Path.Edit) View.VISIBLE else View.INVISIBLE
-        button.setOnClickListener {
+        binding.btDeleteMotorcycle.visibility = if (currentPath == Path.Edit) View.VISIBLE else View.INVISIBLE
+        binding.btDeleteMotorcycle.setOnClickListener {
             deleteMotorcycle()
         }
 
-
-        imageAdd.setOnClickListener{
+        binding.ibBikeImage.setOnClickListener {
             uploadImage()
         }
 
-        imageAdd.setOnLongClickListener{
+        binding.ibBikeImage.setOnLongClickListener {
             tempBitmap = null
             bShouldRemoveImage = true
-            imageAdd.setImageResource(R.drawable.add_photo)
+            binding.ibBikeImage.setImageResource(R.drawable.add_photo)
             true
         }
 
-        setHasOptionsMenu(true)
-        return view
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.save_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                if (menuItem.itemId == R.id.save_menu) {
+                    insertDataToDatabase()
+                    return true
+                }
+                return false
+            }
+        }, viewLifecycleOwner)
+
+        return binding.root
     }
 
-    private fun insertDataToDatabase(view: View) {
-        val manufacturer = view.findViewById<EditText>(R.id.et_bike_manufacturer).text.toString().trim()
-        val model = view.findViewById<EditText>(R.id.et_bike_model).text.toString().trim()
-        val name = view.findViewById<EditText>(R.id.et_bike_alias).text.toString().trim()
-        val year = view.findViewById<EditText>(R.id.et_bike_year).text.toString()
-        val startKm = view.findViewById<EditText>(R.id.et_bike_startkm).text.toString()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-        if(inputCheck(manufacturer, model, year))
-        {
-            val km = if(startKm.isEmpty()) 0 else startKm.toInt()
+    private fun insertDataToDatabase() {
+        val manufacturer = binding.etBikeManufacturer.text.toString().trim()
+        val model = binding.etBikeModel.text.toString().trim()
+        val name = binding.etBikeAlias.text.toString().trim()
+        val year = binding.etBikeYear.text.toString()
+        val startKm = binding.etBikeStartkm.text.toString()
+
+        if (inputCheck(manufacturer, model, year)) {
+            val km = if (startKm.isEmpty()) 0 else startKm.toInt()
             val yearInt = year.toInt()
 
-            if(yearInt > Calendar.getInstance().get(Calendar.YEAR)) {
+            if (yearInt > Calendar.getInstance().get(Calendar.YEAR)) {
                 showToast(requireContext(), getString(R.string.bike_future))
                 return
             }
-            if(yearInt < 1900) {
+            if (yearInt < 1900) {
                 showToast(requireContext(), getString(R.string.bike_past))
                 return
             }
-            if(currentPath == Path.Edit)
-            {
-                val motorcycle = args.currentMotorcycle!!.copy(manufacturer = manufacturer, model = model, alias = name, year = yearInt, start_km = km, personal_km = 0)
+            if (currentPath == Path.Edit) {
+                val motorcycle = args.currentMotorcycle!!.copy(
+                    manufacturer = manufacturer, model = model, alias = name,
+                    year = yearInt, start_km = km, personal_km = 0
+                )
 
-                if(motorcycle.logs.distance.any { log -> distanceLogsCheck(log, motorcycle.start_km, motorcycle.year) })
-                {
+                if (motorcycle.logs.distance.any { log -> distanceLogsCheck(log, motorcycle.start_km, motorcycle.year) }) {
                     MaterialAlertDialogBuilder(requireContext())
-                        .setPositiveButton(getString(R.string.delete_logs)){ _,_ ->
-                            motorcycle.logs.distance = motorcycle.logs.distance.filter { log -> !distanceLogsCheck(log, motorcycle.start_km, motorcycle.year) }
+                        .setPositiveButton(getString(R.string.delete_logs)) { _, _ ->
+                            motorcycle.logs.distance = motorcycle.logs.distance.filter { log ->
+                                !distanceLogsCheck(log, motorcycle.start_km, motorcycle.year)
+                            }
                             motorcycle.personal_km = getUpdatedBikeDistance(motorcycle)
                             mMotorcycleViewModel.updateMotorcycle(motorcycle, tempBitmap, bShouldRemoveImage)
                             showToast(requireContext(), getString(R.string.bike_saved))
@@ -127,70 +144,63 @@ class MotorcycleAddFragment : Fragment() {
                         .setMessage(getString(R.string.log_mismatch_action))
                         .show()
                     return
-                }
-                else
-                {
+                } else {
                     motorcycle.personal_km = getUpdatedBikeDistance(motorcycle)
                     mMotorcycleViewModel.updateMotorcycle(motorcycle, tempBitmap, bShouldRemoveImage)
                 }
                 showToast(requireContext(), getString(R.string.bike_saved))
-            }
-            else
-            {
+            } else {
                 val motorcycle = Motorcycle(0, manufacturer, model, name, yearInt, km)
                 mMotorcycleViewModel.addMotorcycle(motorcycle, tempBitmap)
                 showToast(requireContext(), getString(R.string.bike_add), Toast.LENGTH_LONG)
             }
 
             findNavController().navigateUp()
-        }
-        else showToast(requireContext(), getString(R.string.fill_fields))
+        } else showToast(requireContext(), getString(R.string.fill_fields))
     }
 
-    private fun inputCheck(manufacturer: String, model: String, year: String): Boolean
-    {
+    private fun inputCheck(manufacturer: String, model: String, year: String): Boolean {
         return manufacturer.isNotEmpty() && model.isNotEmpty() && year.isNotEmpty()
     }
 
-    private fun distanceLogsCheck(log: DistanceLog, startKm: Int, bikeYear: Int): Boolean
-    {
+    private fun distanceLogsCheck(log: DistanceLog, startKm: Int, bikeYear: Int): Boolean {
         return dateFromLong(log.date, Calendar.YEAR) < bikeYear || log.distance < startKm
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.save_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.save_menu) insertDataToDatabase(requireView())
-        return super.onContextItemSelected(item)
-    }
-
-    private fun deleteMotorcycle()
-    {
+    private fun deleteMotorcycle() {
         val currentBike = args.currentMotorcycle!!
         MaterialAlertDialogBuilder(requireContext())
-            .setPositiveButton(getString(R.string.yes)){ _, _ ->
-            mMotorcycleViewModel.deleteMotorcycle(currentBike)
-            showToast(requireContext(),getString(R.string.bike_delete))
-            findNavController().navigateUp()
-        }
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                mMotorcycleViewModel.deleteMotorcycle(currentBike)
+                showToast(requireContext(), getString(R.string.bike_delete))
+                findNavController().navigateUp()
+            }
             .setNegativeButton(getString(R.string.no), null)
             .setTitle("${getString(R.string.delete)} ${currentBike.manufacturer} ${currentBike.model}?")
             .setMessage(getString(R.string.delete_bike_question))
             .show()
     }
 
+    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            val options = CropImageContractOptions(
+                uri,
+                CropImageOptions(
+                    imageSourceIncludeGallery = false,
+                    imageSourceIncludeCamera = false
+                )
+            )
+            cropImage.launch(options)
+        }
+    }
+
     private val cropImage = registerForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful && result.uriContent != null) {
             val uriContent = result.uriContent!!
-
-            val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, uriContent))
-            } else {
-                MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uriContent)
-            }
-            requireView().findViewById<ImageButton>(R.id.ib_bike_image).setImageBitmap(bitmap)
+            val bitmap = ImageDecoder.decodeBitmap(
+                ImageDecoder.createSource(requireContext().contentResolver, uriContent)
+            )
+            binding.ibBikeImage.setImageBitmap(bitmap)
             tempBitmap = bitmap
 
             MaterialAlertDialogBuilder(requireContext())
@@ -202,7 +212,6 @@ class MotorcycleAddFragment : Fragment() {
     }
 
     private fun uploadImage() {
-        val options = CropImageContractOptions(null, CropImageOptions(imageSourceIncludeGallery = true, imageSourceIncludeCamera = false))
-        cropImage.launch(options)
+        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 }

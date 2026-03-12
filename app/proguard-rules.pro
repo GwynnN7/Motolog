@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Fix for Missing class com.google.j2objc.annotations.RetainedWith
+-dontwarn com.google.j2objc.annotations.RetainedWith
+-dontwarn javax.annotation.Nullable
+-dontwarn javax.annotation.CheckForNull
+-dontwarn org.checkerframework.checker.nullness.qual.Nullable
+-dontwarn org.checkerframework.checker.nullness.compatqual.NullableDecl
+-dontwarn org.checkerframework.checker.nullness.compatqual.NonNullDecl

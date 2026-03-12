@@ -1,64 +1,61 @@
 package com.gwynn7.motolog.Fragments.ModsLog
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gwynn7.motolog.Models.ModsLog
 import com.gwynn7.motolog.Models.Motorcycle
 import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
+import com.gwynn7.motolog.databinding.ModslogRowBinding
 import com.gwynn7.motolog.longToDateString
 import com.gwynn7.motolog.repairColors
 
-class ModsLogAdapter: RecyclerView.Adapter<ModsLogAdapter.MyViewHolder>(){
-    private var modsLogList = emptyList<ModsLog>()
+class ModsLogAdapter : ListAdapter<ModsLog, ModsLogAdapter.ViewHolder>(DiffCallback()) {
     private lateinit var currentBike: Motorcycle
-    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.modslog_row, parent, false)
-        )
+    class ViewHolder(val binding: ModslogRowBinding) : RecyclerView.ViewHolder(binding.root)
+
+    class DiffCallback : DiffUtil.ItemCallback<ModsLog>() {
+        override fun areItemsTheSame(oldItem: ModsLog, newItem: ModsLog) =
+            oldItem.date == newItem.date && oldItem.title == newItem.title
+        override fun areContentsTheSame(oldItem: ModsLog, newItem: ModsLog) = oldItem == newItem
     }
 
-    override fun getItemCount(): Int {
-        return modsLogList.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ModslogRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val currentItem = modsLogList[position]
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val currentItem = getItem(position)
+        with(holder.binding) {
+            twModTitle.text = currentItem.title
+            twModTitle.isSelected = true
 
-        val title = holder.itemView.findViewById<TextView>(R.id.tw_mod_title)
-        title.text = currentItem.title
-        title.isSelected = true
+            twModDescription.text = currentItem.description
+            twModDescription.isSelected = true
 
-        val description = holder.itemView.findViewById<TextView>(R.id.tw_mod_description)
-        description.text = currentItem.description
-        description.isSelected = true
+            twModDate.text = longToDateString(currentItem.date)
 
-        holder.itemView.findViewById<TextView>(R.id.tw_mod_date).text = longToDateString(currentItem.date)
+            val price = String.format("${root.resources.getString(R.string.price)}: %.2f%s", currentItem.price, UnitHelper.getCurrency())
+            twModPrice.text = price
 
-        val price = String.format("${holder.itemView.resources.getString(R.string.price)}: %.2f%s", currentItem.price, UnitHelper.getCurrency())
-        holder.itemView.findViewById<TextView>(R.id.tw_mod_price).text = price
+            modImage.setColorFilter(ContextCompat.getColor(root.context, repairColors[position % repairColors.size]))
 
-        holder.itemView.findViewById<ImageView>(R.id.mod_image).setColorFilter(holder.itemView.resources.getColor(
-            repairColors[position % repairColors.size], null));
-
-        holder.itemView.findViewById<CardView>(R.id.cv_mods_row).setOnClickListener {
-            val action = ModsLogFragmentDirections.modslogToModsadd(currentBike, position)
-            holder.itemView.findNavController().navigate(action)
+            cvModsRow.setOnClickListener {
+                val action = ModsLogFragmentDirections.modslogToModsadd(currentBike, position)
+                root.findNavController().navigate(action)
+            }
         }
     }
 
-    fun bindBike(bike: Motorcycle)
-    {
-        modsLogList = bike.logs.mods
+    fun bindBike(bike: Motorcycle) {
         currentBike = bike
-        notifyDataSetChanged()
+        submitList(bike.logs.mods)
     }
 }

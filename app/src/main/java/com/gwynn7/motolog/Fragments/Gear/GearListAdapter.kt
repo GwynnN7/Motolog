@@ -1,68 +1,62 @@
 package com.gwynn7.motolog.Fragments.Gear
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.net.toFile
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gwynn7.motolog.Models.Gear
 import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
+import com.gwynn7.motolog.databinding.GearRowBinding
 import com.gwynn7.motolog.longToDateString
 
-class GearListAdapter : RecyclerView.Adapter<GearListAdapter.MyViewHolder>() {
-    private var gearList = emptyList<Gear>()
-    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){}
+class GearListAdapter : ListAdapter<Gear, GearListAdapter.ViewHolder>(DiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.gear_row, parent, false)
-        )
+    class ViewHolder(val binding: GearRowBinding) : RecyclerView.ViewHolder(binding.root)
+
+    class DiffCallback : DiffUtil.ItemCallback<Gear>() {
+        override fun areItemsTheSame(oldItem: Gear, newItem: Gear) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Gear, newItem: Gear) = oldItem == newItem
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val currentItem = gearList[position];
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = GearRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
 
-        val gearModel = holder.itemView.findViewById<TextView>(R.id.tw_gear_model)
-        gearModel.isSelected = true
-        gearModel.text = currentItem.model
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val currentItem = getItem(position)
+        with(holder.binding) {
+            twGearModel.isSelected = true
+            twGearModel.text = currentItem.model
 
-        holder.itemView.findViewById<TextView>(R.id.tw_gear_manufacturer).text = currentItem.manufacturer
-        holder.itemView.findViewById<TextView>(R.id.tw_gear_date).text = String.format("${holder.itemView.resources.getString(R.string.date)}: %s", longToDateString(currentItem.date))
+            twGearManufacturer.text = currentItem.manufacturer
+            twGearDate.text = String.format(
+                "${root.resources.getString(R.string.date)}: %s", longToDateString(currentItem.date)
+            )
 
-        val price = String.format("%.2f%s", currentItem.price, UnitHelper.getCurrency())
-        holder.itemView.findViewById<TextView>(R.id.tw_gear_price).text = price
+            val price = String.format("%.2f%s", currentItem.price, UnitHelper.getCurrency())
+            twGearPrice.text = price
 
-        val gearImage = holder.itemView.findViewById<ImageView>(R.id.gear_image)
-        if(currentItem.listImage != null && currentItem.listImage!!.toFile().exists()) gearImage.setImageURI(currentItem.listImage)
-        else gearImage.setImageResource(R.drawable.helmet_list)
+            if (currentItem.listImage != null && currentItem.listImage!!.toFile().exists()) {
+                gearImage.setImageURI(currentItem.listImage)
+            } else {
+                gearImage.setImageResource(R.drawable.helmet_list)
+            }
 
-        val item = holder.itemView.findViewById<CardView>(R.id.cv_gear_row)
+            cvGearRow.setOnClickListener {
+                val action = GearListFragmentDirections.gearlistToGearshow(currentItem)
+                root.findNavController().navigate(action)
+            }
 
-        item.setOnClickListener {
-            val action = GearListFragmentDirections.gearlistToGearshow(currentItem)
-            holder.itemView.findNavController().navigate(action)
+            cvGearRow.setOnLongClickListener {
+                val action = GearListFragmentDirections.gearlistToGearadd(currentItem)
+                root.findNavController().navigate(action)
+                true
+            }
         }
-
-        item.setOnLongClickListener {
-            val action = GearListFragmentDirections.gearlistToGearadd(currentItem)
-            holder.itemView.findNavController().navigate(action)
-            true
-        }
     }
-
-    override fun getItemCount(): Int {
-        return gearList.size
-    }
-
-    fun bindGearList(gears: List<Gear>)
-    {
-        gearList = gears;
-        notifyDataSetChanged()
-    }
-
 }

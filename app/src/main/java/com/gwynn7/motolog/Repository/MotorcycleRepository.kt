@@ -7,19 +7,19 @@ import com.gwynn7.motolog.Models.Motorcycle
 class MotorcycleRepository(private val motorcycleDao: MotorcycleDAO) {
     val readAllData: LiveData<List<Motorcycle>> = motorcycleDao.readAllData()
 
-    suspend fun addMotorcycle(motorcycle: Motorcycle){
-        motorcycleDao.addMotorcycle(motorcycle);
+    suspend fun addMotorcycle(motorcycle: Motorcycle) {
+        motorcycleDao.addMotorcycle(motorcycle)
     }
 
-    suspend fun updateMotorcycle(motorcycle: Motorcycle){
-        motorcycleDao.updateMotorcycle(motorcycle);
+    suspend fun updateMotorcycle(motorcycle: Motorcycle) {
+        motorcycleDao.updateMotorcycle(motorcycle)
     }
 
-    suspend fun deleteMotorcycle(motorcycle: Motorcycle){
+    suspend fun deleteMotorcycle(motorcycle: Motorcycle) {
         motorcycleDao.deleteMotorcycle(motorcycle)
     }
 
-    fun getMotorcycle(id: Int): LiveData<List<Motorcycle>>{
+    fun getMotorcycle(id: Int): LiveData<List<Motorcycle>> {
         return motorcycleDao.getMotorcycle(id)
     }
 }

@@ -1,0 +1,161 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 14,
+    "identityHash": "ca0ab4e18c403dd6a59e06c67c1b3144",
+    "entities": [
+      {
+        "tableName": "motorcycle",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `manufacturer` TEXT NOT NULL, `model` TEXT NOT NULL, `alias` TEXT NOT NULL, `year` INTEGER NOT NULL, `start_km` INTEGER NOT NULL, `personal_km` INTEGER NOT NULL, `image` TEXT, `listImage` TEXT, `distance` TEXT NOT NULL, `maintenance` TEXT NOT NULL, `mods` TEXT NOT NULL, `cylinders` INTEGER NOT NULL, `engine_cc` REAL NOT NULL, `horse_power` REAL NOT NULL, `torque` REAL NOT NULL, `price` REAL NOT NULL, `front_tire` TEXT NOT NULL, `rear_tire` TEXT NOT NULL, `plate_number` TEXT NOT NULL, `insurance` INTEGER NOT NULL, `tax` INTEGER NOT NULL, `inspection` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manufacturer",
+            "columnName": "manufacturer",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alias",
+            "columnName": "alias",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start_km",
+            "columnName": "start_km",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "personal_km",
+            "columnName": "personal_km",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "image",
+            "columnName": "image",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "listImage",
+            "columnName": "listImage",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "logs.distance",
+            "columnName": "distance",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "logs.maintenance",
+            "columnName": "maintenance",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "logs.mods",
+            "columnName": "mods",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.cylinders",
+            "columnName": "cylinders",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.engine_cc",
+            "columnName": "engine_cc",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.horse_power",
+            "columnName": "horse_power",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.torque",
+            "columnName": "torque",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.front_tire",
+            "columnName": "front_tire",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.rear_tire",
+            "columnName": "rear_tire",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.plate_number",
+            "columnName": "plate_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expiry.insurance",
+            "columnName": "insurance",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expiry.tax",
+            "columnName": "tax",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expiry.inspection",
+            "columnName": "inspection",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ca0ab4e18c403dd6a59e06c67c1b3144')"
+    ]
+  }
+}

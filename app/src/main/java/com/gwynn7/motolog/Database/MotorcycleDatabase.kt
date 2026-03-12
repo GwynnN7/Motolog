@@ -5,35 +5,27 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.gwynn7.motolog.Models.Motorcycle
-
 
 @Database(entities = [Motorcycle::class], version = 14, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class MotorcycleDatabase : RoomDatabase() {
     abstract fun motorcycleDao(): MotorcycleDAO
 
-    companion object{
+    companion object {
         @Volatile
         private var INSTANCE: MotorcycleDatabase? = null
 
         fun getDatabase(context: Context): MotorcycleDatabase {
-            val tempInstance = INSTANCE
-            if(tempInstance != null){
-                return tempInstance
-            }
-            synchronized(this){
-                val instance = Room.databaseBuilder(
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     MotorcycleDatabase::class.java,
                     "motorcycles_db"
                 )
-                instance.fallbackToDestructiveMigration()
-                val builtInstance = instance.build()
-                INSTANCE = builtInstance
-                return builtInstance
+                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .build()
+                    .also { INSTANCE = it }
             }
         }
     }

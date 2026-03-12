@@ -7,6 +7,7 @@ import com.gwynn7.motolog.Models.ModsLog
 import com.gwynn7.motolog.Models.RepairsLog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import androidx.core.net.toUri
 
 class Converters {
     @TypeConverter
@@ -60,6 +61,6 @@ class Converters {
     @TypeConverter
     fun getURIFromString(string: String?): Uri? {
         if (string == null) return null
-        return Uri.parse(string)
+        return string.toUri()
     }
 }

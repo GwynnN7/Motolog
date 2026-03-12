@@ -4,12 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Handler
 import android.widget.Toast
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.text.DecimalFormat
@@ -17,11 +18,14 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import androidx.core.graphics.scale
+import kotlinx.coroutines.flow.map
 
-enum class Path{
+enum class Path {
     Add,
     Edit
 }
+
 val repairColors = arrayOf(
     R.color.red,
     R.color.orange,
@@ -32,87 +36,88 @@ val repairColors = arrayOf(
     R.color.white
 )
 
-object UnitHelper
-{
+object UnitHelper {
     private val distanceKey = stringPreferencesKey("distance")
     private val currencyKey = stringPreferencesKey("currency")
 
-    enum class Currency(val value: String){
+    enum class Currency(val value: String) {
         EUR("€"),
         USD("$"),
         GBP("£"),
         JPY("¥")
     }
 
-    enum class Distance(val value: String){
+    enum class Distance(val value: String) {
         KM("km"),
         MILES("mi"),
     }
 
-    lateinit var distance: Distance
-    lateinit var currency: Currency
+    var distance: Distance = Distance.KM
+    var currency: Currency = Currency.EUR
 
     fun getDistance() = distance.value
-    fun getDistanceText(context: Context) = if(distance == Distance.MILES) context.getString(R.string.miles_undercase) else distance.value
+    fun getDistanceText(context: Context) = if (distance == Distance.MILES) context.getString(R.string.miles_undercase) else distance.value
     fun getCurrency() = currency.value
 
     fun loadData(context: Context) {
-        runBlocking {
-            val settings = context.settings.data.first()
-            distance = fromDistance(settings[distanceKey] ?: Distance.KM.value)
-            currency = fromCurrency(settings[currencyKey] ?: Currency.EUR.value)
+        CoroutineScope(Dispatchers.Main).launch {
+            context.settings.data.map { settings ->
+                val dist = settings[distanceKey] ?: Distance.KM.value
+                val curr = settings[currencyKey] ?: Currency.EUR.value
+                Pair(fromDistance(dist), fromCurrency(curr))
+            }.collect { (dist, curr) ->
+                distance = dist
+                currency = curr
+            }
         }
     }
 
     fun saveDistance(context: Context, newDistance: Distance) {
-        runBlocking { context.settings.edit { settings -> settings[distanceKey] = newDistance.value }}
         distance = newDistance
+        CoroutineScope(Dispatchers.IO).launch {
+            context.settings.edit { settings -> settings[distanceKey] = newDistance.value }
+        }
     }
+
     fun saveCurrency(context: Context, newCurrency: Currency) {
-        runBlocking { context.settings.edit { settings -> settings[currencyKey] = newCurrency.value }}
         currency = newCurrency
+        CoroutineScope(Dispatchers.IO).launch {
+            context.settings.edit { settings -> settings[currencyKey] = newCurrency.value }
+        }
     }
 
     private fun fromDistance(value: String): Distance = Distance.entries.first { it.value == value }
     private fun fromCurrency(value: String): Currency = Currency.entries.first { it.value == value }
-
 }
 
-fun longToDateString(date: Long): String{
+fun longToDateString(date: Long): String {
     val simpleDateFormat by lazy { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) }
     return simpleDateFormat.format(Date(date))
 }
 
-fun dateFromLong(date: Long, field: Int): Int{
+fun dateFromLong(date: Long, field: Int): Int {
     val cal: Calendar = Calendar.getInstance()
-    cal.setTime(Date(date))
+    cal.time = Date(date)
     return cal.get(field)
 }
 
-fun longFromDate(year: Int, month: Int, dayOfMonth: Int): Long{
+fun longFromDate(year: Int, month: Int, dayOfMonth: Int): Long {
     val cal: Calendar = Calendar.getInstance()
     cal.set(year, month, dayOfMonth)
-    return cal.getTimeInMillis()
+    return cal.timeInMillis
 }
 
-fun showToast(context: Context, text: String, length: Int = Toast.LENGTH_SHORT){
+fun showToast(context: Context, text: String, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(context, text, length).show()
 }
-fun formatThousand(number: Int): String{
+
+fun formatThousand(number: Int): String {
     val formatter = DecimalFormat("#,###")
     return formatter.format(number)
 }
 
 fun capitalize(string: String): String {
     return string.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-}
-
-fun <T : RecyclerView.ViewHolder?> showToastAfterDelay(adapter: RecyclerView.Adapter<T>, context: Context, stringId: Int) {
-    Handler().postDelayed({
-        try{
-            if (adapter.itemCount == 0) showToast(context, context.getString(stringId))
-        }catch(_: Exception){}
-    }, 500)
 }
 
 fun stop(activity: Activity?) {
@@ -131,12 +136,12 @@ fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap {
         height = maxSize
         width = (height * bitmapRatio).toInt()
     }
-    return Bitmap.createScaledBitmap(image, width, height, true)
+    return image.scale(width, height)
 }
 
 fun deleteImage(image: Uri?) {
-    if(image != null){
+    if (image != null) {
         val oldFile = File(image.path!!)
-        if(oldFile.exists()) oldFile.delete()
+        if (oldFile.exists()) oldFile.delete()
     }
 }

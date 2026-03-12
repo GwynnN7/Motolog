@@ -7,70 +7,77 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.gwynn7.motolog.R
-import com.gwynn7.motolog.ViewModel.GearViewModel
-import com.gwynn7.motolog.showToast
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.gwynn7.motolog.UnitHelper
-import com.gwynn7.motolog.formatThousand
-import com.gwynn7.motolog.showToastAfterDelay
+import com.gwynn7.motolog.ViewModel.GearViewModel
+import com.gwynn7.motolog.databinding.GearCostDialogBinding
+import com.gwynn7.motolog.databinding.GearListBinding
 
-class GearListFragment : Fragment() {
-    private lateinit var mGearViewModel: GearViewModel
+class GearListFragment : Fragment(), MenuProvider {
+    private var _binding: GearListBinding? = null
+    private val binding get() = _binding!!
+    private val mGearViewModel: GearViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.gear_list, container, false)
+    ): View {
+        _binding = GearListBinding.inflate(inflater, container, false)
 
-        val adapter = GearListAdapter()
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rw_gears)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        mGearViewModel = ViewModelProvider(this)[GearViewModel::class.java]
-        mGearViewModel.readAllData.observe(viewLifecycleOwner, Observer {
-            gears -> run {
-                adapter.bindGearList(gears.sortedBy { gear -> gear.date }.reversed() )
-                showToastAfterDelay(adapter, requireContext(), R.string.add_first_gear)
-            }
-        })
-
-        view.findViewById<FloatingActionButton>(R.id.fab_addGear).setOnClickListener{
+        binding.fabAddGear.setOnClickListener {
             val action = GearListFragmentDirections.gearlistToGearadd(null)
             findNavController().navigate(action)
         }
-        setHasOptionsMenu(true)
-        return view
+
+        requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.money_menu, menu)
+    override fun onResume() {
+        super.onResume()
+
+        val adapter = GearListAdapter()
+        binding.rwGears.adapter = adapter
+        binding.rwGears.layoutManager = LinearLayoutManager(requireContext())
+
+        mGearViewModel.readAllData.observe(viewLifecycleOwner) { gears ->
+            binding.placeholder.visibility = if (gears.isEmpty()) View.VISIBLE else View.GONE
+            adapter.submitList(gears.sortedBy { gear -> gear.date }.reversed())
+        }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.money_menu){
-            val inflater = this.layoutInflater
-            val dialogView: View = inflater.inflate(R.layout.gear_cost_dialog, null)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.money_menu, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        if (menuItem.itemId == R.id.money_menu) {
+            val dialogBinding = GearCostDialogBinding.inflate(layoutInflater)
 
             var totalMoney = 0.0
             val gearList = mGearViewModel.readAllData.value!!
             for (gear in gearList) totalMoney += gear.price
 
-            dialogView.findViewById<TextView>(R.id.cost).text = String.format("%.2f%s", totalMoney, UnitHelper.getCurrency())
+            dialogBinding.cost.text = String.format("%.2f%s", totalMoney, UnitHelper.getCurrency())
 
             MaterialAlertDialogBuilder(requireContext())
-                .setView(dialogView)
+                .setView(dialogBinding.root)
                 .show()
+            return true
         }
-        return super.onContextItemSelected(item)
+        return false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

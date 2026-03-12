@@ -1,61 +1,63 @@
 package com.gwynn7.motolog.Fragments.ModsLog
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.gwynn7.motolog.Models.Motorcycle
-import com.gwynn7.motolog.R
 import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.gwynn7.motolog.showToastAfterDelay
+import com.gwynn7.motolog.databinding.ModslogListBinding
 import com.gwynn7.motolog.stop
 
 class ModsLogFragment : Fragment() {
-    private lateinit var mMotorcycleViewModel: MotorcycleViewModel
-    private lateinit var currentbike: Motorcycle
+    private var _binding: ModslogListBinding? = null
+    private val binding get() = _binding!!
+    private val mMotorcycleViewModel: MotorcycleViewModel by viewModels()
+    private lateinit var currentBike: Motorcycle
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.modslog_list, container, false)
+    ): View {
+        _binding = ModslogListBinding.inflate(inflater, container, false)
+
+        binding.fabAddModsLog.setOnClickListener {
+            val action = ModsLogFragmentDirections.modslogToModsadd(currentBike)
+            findNavController().navigate(action)
+        }
+
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         val adapter = ModsLogAdapter()
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rw_modslogs)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        mMotorcycleViewModel = ViewModelProvider(this)[MotorcycleViewModel::class.java]
+        binding.rwModslogs.adapter = adapter
+        binding.rwModslogs.layoutManager = LinearLayoutManager(requireContext())
 
         val bikeId = MotorcycleViewModel.currentBikeId
-        if(bikeId == null)
-        {
+        if (bikeId == null) {
             stop(activity)
-            return view
+            return
         }
 
         val bikeData = mMotorcycleViewModel.getMotorcycle(bikeId)
-        bikeData.observe(viewLifecycleOwner, Observer {
-            bikes -> run {
-            if(bikes.isNotEmpty()) {
-                currentbike = bikes.first()
-                adapter.bindBike(currentbike)
-
-                showToastAfterDelay(adapter, requireContext(), R.string.add_first_mod)
-            }
-            else stop(activity)
+        bikeData.observe(viewLifecycleOwner) { bikes ->
+            if (bikes.isNotEmpty()) {
+                currentBike = bikes.first()
+                binding.placeholder.visibility = if (currentBike.logs.mods.isEmpty()) View.VISIBLE else View.GONE
+                adapter.bindBike(currentBike)
+            } else stop(activity)
         }
-        })
+    }
 
-        view.findViewById<FloatingActionButton>(R.id.fab_addModsLog).setOnClickListener{
-            val action = ModsLogFragmentDirections.modslogToModsadd(currentbike)
-            findNavController().navigate(action)
-        }
-        return view
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

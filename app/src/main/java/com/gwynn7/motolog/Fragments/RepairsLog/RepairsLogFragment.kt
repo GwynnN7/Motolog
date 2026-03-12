@@ -7,96 +7,103 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.gwynn7.motolog.Models.Motorcycle
 import com.gwynn7.motolog.R
 import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
-import com.gwynn7.motolog.showToastAfterDelay
+import com.gwynn7.motolog.databinding.RepairslogListBinding
 import com.gwynn7.motolog.stop
 
-
-class RepairsLogFragment : Fragment() {
-    private lateinit var mMotorcycleViewModel: MotorcycleViewModel
-    private lateinit var currentbike: Motorcycle
+class RepairsLogFragment : Fragment(), MenuProvider {
+    private var _binding: RepairslogListBinding? = null
+    private val binding get() = _binding!!
+    private val mMotorcycleViewModel: MotorcycleViewModel by viewModels()
+    private lateinit var currentBike: Motorcycle
     private lateinit var adapter: RepairsLogAdapter
-    var filterIndex = 0;
+    var filterIndex = 0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.repairslog_list, container, false)
+    ): View {
+        _binding = RepairslogListBinding.inflate(inflater, container, false)
 
-        adapter = RepairsLogAdapter()
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rw_repairs)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        mMotorcycleViewModel = ViewModelProvider(this)[MotorcycleViewModel::class.java]
-
-        val bikeId = MotorcycleViewModel.currentBikeId
-        if(bikeId == null)
-        {
-            stop(activity)
-            return view
-        }
-
-        val bikeData = mMotorcycleViewModel.getMotorcycle(bikeId)
-        bikeData.observe(viewLifecycleOwner, Observer {
-            bikes -> run {
-            if(bikes.isNotEmpty()) {
-                currentbike = bikes.first()
-                adapter.bindBike(currentbike)
-
-                showToastAfterDelay(adapter, requireContext(), R.string.add_first_repair)
-            }
-            else stop(activity)
-        }
-        })
-        var arrayType = 0;
-        view.findViewById<FloatingActionButton>(R.id.fab_addRepairsLog).setOnClickListener{
-            val alert = MaterialAlertDialogBuilder(requireContext())
+        var arrayType = 0
+        binding.fabAddRepairsLog.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
                 .setNegativeButton(R.string.back, null)
                 .setSingleChoiceItems(resources.getStringArray(R.array.repair_types), 0) { _, which ->
-                    arrayType = which;
+                    arrayType = which
                 }
                 .setTitle(R.string.choose_repair_type)
-                .setPositiveButton(R.string.add_log){ _, _ ->
-                    val action = RepairsLogFragmentDirections.repairslistToRepairsadd(currentbike, arrayType)
+                .setPositiveButton(R.string.add_log) { _, _ ->
+                    val action = RepairsLogFragmentDirections.repairslistToRepairsadd(currentBike, arrayType)
                     findNavController().navigate(action)
                 }
                 .show()
         }
-        setHasOptionsMenu(true)
-        return view
+
+        requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.filter_menu, menu)
+    override fun onResume() {
+        super.onResume()
+
+        adapter = RepairsLogAdapter()
+        binding.rwRepairs.adapter = adapter
+        binding.rwRepairs.layoutManager = LinearLayoutManager(requireContext())
+
+        val bikeId = MotorcycleViewModel.currentBikeId
+        if (bikeId == null) {
+            stop(activity)
+            return
+        }
+
+        val bikeData = mMotorcycleViewModel.getMotorcycle(bikeId)
+        bikeData.observe(viewLifecycleOwner) { bikes ->
+            if (bikes.isNotEmpty()) {
+                currentBike = bikes.first()
+                binding.placeholder.visibility = if (currentBike.logs.maintenance.isEmpty()) View.VISIBLE else View.GONE
+                adapter.bindBike(currentBike)
+            } else stop(activity)
+        }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.filter_menu){
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.filter_menu, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        if (menuItem.itemId == R.id.filter_menu) {
             val filterList = resources.getStringArray(R.array.repair_types).toMutableList()
             filterList.add(0, resources.getString(R.string.all))
-            val alert = MaterialAlertDialogBuilder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setSingleChoiceItems(filterList.toTypedArray(), filterIndex) { _, which ->
-                    filterIndex = which;
+                    filterIndex = which
                 }
                 .setTitle(R.string.filter_type)
-                .setNegativeButton(R.string.from_old){ _, _ ->
-                    adapter.filter(filterIndex-1, true)
+                .setNegativeButton(R.string.from_old) { _, _ ->
+                    adapter.filter(filterIndex - 1, true)
                 }
-                .setPositiveButton(R.string.from_new){ _, _ ->
-                    adapter.filter(filterIndex-1, false)
+                .setPositiveButton(R.string.from_new) { _, _ ->
+                    adapter.filter(filterIndex - 1, false)
                 }
                 .show()
+            return true
         }
-        return super.onContextItemSelected(item)
+        return false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

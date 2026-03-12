@@ -20,14 +20,16 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 import java.util.UUID
 
-class GearViewModel (application: Application): AndroidViewModel(application) {
+class GearViewModel(application: Application) : AndroidViewModel(application) {
     val readAllData: LiveData<List<Gear>>
     private val repository: GearRepository
     private var imageDirectory: File?
-    private val imageSize = 1200; private val listImageSize = 350
+    private val imageSize = 1200
+    private val listImageSize = 350
+
     init {
         val gearDao = GearDatabase.getDatabase(application).gearDao()
-        imageDirectory = application.applicationContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        imageDirectory = File(application.filesDir, "pictures").apply { mkdirs() }
         repository = GearRepository(gearDao)
         readAllData = repository.readAllData
     }

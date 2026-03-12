@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="@string/motorcycles"
-        android:id="@+id/bike_menu"
+        android:id="@+id/motorcycle_nav"
         android:contentDescription="@string/motorcycles"
         android:icon="@drawable/ic_bike"/>
     <item android:title="@string/gear"
-        android:id="@+id/gear_menu"
+        android:id="@+id/gear_nav"
         android:contentDescription="@string/gear"
         android:icon="@drawable/ic_gear_logo"/>
     <item android:title="@string/settings"
-        android:id="@+id/settings_menu"
+        android:id="@+id/settings_nav"
         android:contentDescription="@string/settings"
         android:icon="@drawable/ic_settings"/>
 </menu>

@@ -9,6 +9,34 @@
         <item>Tax/Inspection/Insurance</item>
         <item>Custom</item>
     </string-array>
+    <string-array name="language_entries">
+        <item>English</item>
+        <item>Italiano</item>
+    </string-array>
+    <string-array name="language_values">
+        <item>en</item>
+        <item>it</item>
+    </string-array>
+    <string-array name="distance_entries">
+        <item>Kilometers (km)</item>
+        <item>Miles (mi)</item>
+    </string-array>
+    <string-array name="distance_values">
+        <item>km</item>
+        <item>mi</item>
+    </string-array>
+    <string-array name="currency_entries">
+        <item>EUR (€)</item>
+        <item>USD ($)</item>
+        <item>GBP (£)</item>
+        <item>JPY (¥)</item>
+    </string-array>
+    <string-array name="currency_values">
+        <item>€</item>
+        <item>$</item>
+        <item>£</item>
+        <item>¥</item>
+    </string-array>
     <string name="fill_fields">Please fill every field</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -20,7 +48,7 @@
     <string name="description_question_remove_log">Are you sure you want to remove this log?</string>
     <string name="bike_editor">Motorcycle editor</string>
     <string name="distance_log">Distance travelled</string>
-    <string name="repairs_log">Maintenance</string>ah
+    <string name="repairs_log">Maintenance</string>
     <string name="mods_log">Mods</string>
     <string name="settings">Settings</string>
     <string name="info">Bike info</string>

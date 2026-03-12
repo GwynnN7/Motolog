@@ -7,79 +7,80 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.gwynn7.motolog.R
-import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
-import com.gwynn7.motolog.formatThousand
-import com.gwynn7.motolog.showToast
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.gwynn7.motolog.UnitHelper
-import com.gwynn7.motolog.settings
-import com.gwynn7.motolog.showToastAfterDelay
-import kotlinx.coroutines.runBlocking
+import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
+import com.gwynn7.motolog.databinding.DistanceDialogBinding
+import com.gwynn7.motolog.databinding.MotorcycleListBinding
+import com.gwynn7.motolog.formatThousand
 
-class MotorcycleListFragment : Fragment() {
-    private lateinit var mMotorcycleViewModel: MotorcycleViewModel
+class MotorcycleListFragment : Fragment(), MenuProvider {
+    private var _binding: MotorcycleListBinding? = null
+    private val binding get() = _binding!!
+    private val mMotorcycleViewModel: MotorcycleViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.motorcycle_list, container, false)
+    ): View {
+        _binding = MotorcycleListBinding.inflate(inflater, container, false)
 
-        val adapter = MotorcycleListAdapter()
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rw_motorcycles)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        /*
-        val tempFixKey = intPreferencesKey("temp-fix")
-        runBlocking {
-            requireContext().settings.edit { s -> s.remove(tempFixKey) }
-        }*/
-
-        mMotorcycleViewModel = ViewModelProvider(this)[MotorcycleViewModel::class.java]
-        mMotorcycleViewModel.readAllData.observe(viewLifecycleOwner, Observer {
-            motorcycles -> run {
-                adapter.bindBikeList(motorcycles.reversed())
-                showToastAfterDelay(adapter, requireContext(), R.string.add_first_bike)
-            }
-        })
-
-        view.findViewById<FloatingActionButton>(R.id.fab_addMotorcycle).setOnClickListener {
+        binding.fabAddMotorcycle.setOnClickListener {
             val action = MotorcycleListFragmentDirections.bikelistToBikeadd(null)
             findNavController().navigate(action)
         }
-        setHasOptionsMenu(true)
-        return view
+
+        requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.distance_menu, menu)
+    override fun onResume() {
+        super.onResume()
+
+        val adapter = MotorcycleListAdapter()
+        binding.rwMotorcycles.adapter = adapter
+        binding.rwMotorcycles.layoutManager = LinearLayoutManager(requireContext())
+
+        mMotorcycleViewModel.readAllData.observe(viewLifecycleOwner) { motorcycles ->
+            binding.placeholder.visibility = if (motorcycles.isEmpty()) View.VISIBLE else View.GONE
+            adapter.submitList(motorcycles.reversed())
+        }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.distance_menu){
-            val inflater = this.layoutInflater
-            val dialogView: View = inflater.inflate(R.layout.distance_dialog, null)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.distance_menu, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        if (menuItem.itemId == R.id.distance_menu) {
+            val dialogBinding = DistanceDialogBinding.inflate(layoutInflater)
 
             var totalDistance = 0
             val bikesList = mMotorcycleViewModel.readAllData.value!!
             for (bike in bikesList) totalDistance += bike.personal_km
 
-            dialogView.findViewById<TextView>(R.id.distance).text = String.format("%s %s", formatThousand(totalDistance), UnitHelper.getDistance())
+            dialogBinding.distance.text = String.format(
+                "%s %s", formatThousand(totalDistance), UnitHelper.getDistance()
+            )
 
             MaterialAlertDialogBuilder(requireContext())
-                .setView(dialogView)
+                .setView(dialogBinding.root)
                 .show()
+            return true
         }
-        return super.onContextItemSelected(item)
+        return false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

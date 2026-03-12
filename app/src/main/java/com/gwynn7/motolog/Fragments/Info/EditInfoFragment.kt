@@ -1,69 +1,71 @@
 package com.gwynn7.motolog.Fragments.Info
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import androidx.lifecycle.ViewModelProvider
+import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.gwynn7.motolog.R
 import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
+import com.gwynn7.motolog.databinding.InfoBikeinfoEditBinding
 import com.gwynn7.motolog.showToast
 
-class EditInfoFragment : Fragment() {
+class EditInfoFragment : Fragment(), MenuProvider {
+    private var _binding: InfoBikeinfoEditBinding? = null
+    private val binding get() = _binding!!
     private val args by navArgs<EditInfoFragmentArgs>()
-    private lateinit var mMotorcycleViewModel: MotorcycleViewModel
-
-    private lateinit var licenseplate: EditText
-    private lateinit var price: EditText
-    private lateinit var front_tire: EditText
-    private lateinit var rear_tire: EditText
+    private val mMotorcycleViewModel: MotorcycleViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.info_bikeinfo_edit, container, false)
-        mMotorcycleViewModel = ViewModelProvider(this)[MotorcycleViewModel::class.java]
+    ): View {
+        _binding = InfoBikeinfoEditBinding.inflate(inflater, container, false)
+
+        requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         val bike = args.currentBike
-
-        licenseplate = view.findViewById(R.id.et_bike_license_plate)
-        price = view.findViewById(R.id.et_bike_price)
-        front_tire = view.findViewById(R.id.et_bike_front_tire)
-        rear_tire = view.findViewById(R.id.et_bike_rear_tire)
-
-        price.setText(bike.info.price.toString())
-        licenseplate.setText(bike.info.plate_number)
-        front_tire.setText(bike.info.front_tire)
-        rear_tire.setText(bike.info.rear_tire)
-
-        setHasOptionsMenu(true)
-        return view
+        binding.etBikePrice.setText(bike.info.price.toString())
+        binding.etBikeLicensePlate.setText(bike.info.plate_number)
+        binding.etBikeFrontTire.setText(bike.info.front_tire)
+        binding.etBikeRearTire.setText(bike.info.rear_tire)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.save_menu, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.save_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.save_menu)
-        {
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        if (menuItem.itemId == R.id.save_menu) {
             val bike = args.currentBike
-            bike.info.front_tire = front_tire.text.toString()
-            bike.info.rear_tire = rear_tire.text.toString()
-            bike.info.plate_number = String.format("%S", licenseplate.text.toString())
-            bike.info.price = if(price.text.isNotEmpty()) price.text.toString().toDouble() else 0.0
+            bike.info.front_tire = binding.etBikeFrontTire.text.toString()
+            bike.info.rear_tire = binding.etBikeRearTire.text.toString()
+            bike.info.plate_number = String.format("%S", binding.etBikeLicensePlate.text.toString())
+            bike.info.price = if (binding.etBikePrice.text.isNotEmpty()) binding.etBikePrice.text.toString().toDouble() else 0.0
             mMotorcycleViewModel.updateMotorcycle(bike, null)
             showToast(requireContext(), getString(R.string.info_saved))
             findNavController().navigateUp()
+            return true
         }
-        return super.onContextItemSelected(item)
+        return false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

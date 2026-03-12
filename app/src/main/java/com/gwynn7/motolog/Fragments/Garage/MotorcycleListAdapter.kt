@@ -2,76 +2,65 @@ package com.gwynn7.motolog.Fragments.Garage
 
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat.getString
 import androidx.core.net.toFile
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gwynn7.motolog.BikeActivity
 import com.gwynn7.motolog.Models.Motorcycle
 import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
+import com.gwynn7.motolog.databinding.MotorcycleRowBinding
 import com.gwynn7.motolog.formatThousand
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.File
 
-class MotorcycleListAdapter: RecyclerView.Adapter<MotorcycleListAdapter.MyViewHolder>() {
-    private var motorcycleList = emptyList<Motorcycle>()
-    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){}
+class MotorcycleListAdapter : ListAdapter<Motorcycle, MotorcycleListAdapter.ViewHolder>(DiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.motorcycle_row, parent, false)
-        )
+    class ViewHolder(val binding: MotorcycleRowBinding) : RecyclerView.ViewHolder(binding.root)
+
+    class DiffCallback : DiffUtil.ItemCallback<Motorcycle>() {
+        override fun areItemsTheSame(oldItem: Motorcycle, newItem: Motorcycle) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Motorcycle, newItem: Motorcycle) = oldItem == newItem
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val currentItem = motorcycleList[position];
-        holder.itemView.findViewById<TextView>(R.id.tw_bike_manufacturer).text = currentItem.manufacturer
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = MotorcycleRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
 
-        val bikeModel = holder.itemView.findViewById<TextView>(R.id.tw_bike_model)
-        bikeModel.isSelected = true
-        bikeModel.text = currentItem.model
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val currentItem = getItem(position)
+        with(holder.binding) {
+            twBikeManufacturer.text = currentItem.manufacturer
 
-        holder.itemView.findViewById<TextView>(R.id.tw_bike_alias).text = currentItem.alias
-        holder.itemView.findViewById<TextView>(R.id.tw_bike_year).text = String.format("${getString(holder.itemView.context, R.string.year)}: %d", currentItem.year)
+            twBikeModel.isSelected = true
+            twBikeModel.text = currentItem.model
 
-        val distance = String.format("%s %s", formatThousand(currentItem.personal_km), UnitHelper.getDistance())
-        holder.itemView.findViewById<TextView>(R.id.tw_bike_distance).text = distance
+            twBikeAlias.text = currentItem.alias
+            twBikeYear.text = String.format("${getString(root.context, R.string.year)}: %d", currentItem.year)
 
-        val motorcycleRow = holder.itemView.findViewById<CardView>(R.id.cv_bike_row)
+            val distance = String.format("%s %s", formatThousand(currentItem.personal_km), UnitHelper.getDistance())
+            twBikeDistance.text = distance
 
-        val bikeImage = holder.itemView.findViewById<ImageView>(R.id.motorcycle_image)
-        if(currentItem.listImage != null && currentItem.listImage!!.toFile().exists()) bikeImage.setImageURI(currentItem.listImage)
-        else bikeImage.setImageResource(R.drawable.bike)
+            if (currentItem.listImage != null && currentItem.listImage!!.toFile().exists()) {
+                motorcycleImage.setImageURI(currentItem.listImage)
+            } else {
+                motorcycleImage.setImageResource(R.drawable.bike)
+            }
 
+            cvBikeRow.setOnClickListener {
+                val bikeActivity = Intent(root.context, BikeActivity::class.java)
+                bikeActivity.putExtra("bike_id", currentItem.id)
+                root.context.startActivity(bikeActivity)
+            }
 
-        motorcycleRow.setOnClickListener {
-            val bikeActivity = Intent(holder.itemView.context, BikeActivity::class.java)
-            bikeActivity.putExtra("bike_id", currentItem.id)
-            holder.itemView.context.startActivity(bikeActivity)
+            cvBikeRow.setOnLongClickListener {
+                val action = MotorcycleListFragmentDirections.bikelistToBikeadd(currentItem)
+                root.findNavController().navigate(action)
+                true
+            }
         }
-
-        motorcycleRow.setOnLongClickListener {
-            val action = MotorcycleListFragmentDirections.bikelistToBikeadd(currentItem)
-            holder.itemView.findNavController().navigate(action)
-            true
-        }
-    }
-
-    override fun getItemCount(): Int {
-        return motorcycleList.size;
-    }
-
-    fun bindBikeList(motorcycles: List<Motorcycle>)
-    {
-        motorcycleList = motorcycles;
-        notifyDataSetChanged()
     }
 }
