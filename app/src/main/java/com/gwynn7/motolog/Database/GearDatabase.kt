@@ -23,10 +23,14 @@ abstract class GearDatabase : RoomDatabase() {
                     GearDatabase::class.java,
                     "gear_db"
                 )
-                    .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                     .also { INSTANCE = it }
             }
+        }
+
+        fun closeDatabase() = synchronized(this) {
+            INSTANCE?.close()
+            INSTANCE = null
         }
     }
 }

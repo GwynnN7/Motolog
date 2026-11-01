@@ -147,7 +147,6 @@
     <string name="confirm_import">Are you sure you want to import new data?</string>
     <string name="overwrite_data">Your current data will be deleted and overwritten, so be sure to choose the correct file!</string>
     <string name="backup_import_error">Backup import failed</string>
-    <string name="check_permissions">Be sure to grant Storage Permission to this application. If you denied them, you can change it in the application\'s settings!</string>
     <string name="unknown_backup_import_error">There was an unknown error importing your backup. Try again!</string>
     <string name="unknown_backup_export_error">There was an unknown error exporting your backup. Try again!</string>
     <string name="backup_export_error">Backup export failed</string>

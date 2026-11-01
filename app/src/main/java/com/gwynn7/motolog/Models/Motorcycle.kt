@@ -4,6 +4,8 @@ import android.net.Uri
 import android.os.Parcelable
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
@@ -11,7 +13,7 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "motorcycle")
 data class Motorcycle(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     val manufacturer: String,
     val model: String,
     val alias: String,
@@ -21,18 +23,9 @@ data class Motorcycle(
     var image: Uri? = null,
     var listImage: Uri? = null,
     @Embedded
-    var logs: Logs = Logs(),
-    @Embedded
     val info: Info = Info(),
     @Embedded
     val expiry: Expiry = Expiry(),
-): Parcelable
-
-@Parcelize
-data class Logs(
-    var distance: List<DistanceLog> = listOf(),
-    var maintenance: List<RepairsLog> = listOf(),
-    var mods: List<ModsLog> = listOf(),
 ): Parcelable
 
 @Parcelize
@@ -54,31 +47,62 @@ data class Expiry(
     var inspection: Long = -1,
 ): Parcelable
 
-@Parcelize
+@Entity(
+    tableName = "mods_log",
+    foreignKeys = [ForeignKey(
+        entity = Motorcycle::class,
+        parentColumns = ["id"],
+        childColumns = ["motorcycleId"],
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [Index("motorcycleId")]
+)
 data class ModsLog(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val motorcycleId: Int,
     val title: String,
     val description: String,
     val date: Long,
     val price: Double
-): Parcelable
+)
 
-@Parcelize
+@Entity(
+    tableName = "repairs_log",
+    foreignKeys = [ForeignKey(
+        entity = Motorcycle::class,
+        parentColumns = ["id"],
+        childColumns = ["motorcycleId"],
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [Index("motorcycleId")]
+)
 data class RepairsLog(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val motorcycleId: Int,
     var typeIndex: Int,
     val typeText: String,
     val notes: String,
     val date: Long,
     val repair_km: Int,
     val price: Double
-): Parcelable
+)
 
-@Parcelize
+@Entity(
+    tableName = "distance_log",
+    foreignKeys = [ForeignKey(
+        entity = Motorcycle::class,
+        parentColumns = ["id"],
+        childColumns = ["motorcycleId"],
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [Index("motorcycleId")]
+)
 data class DistanceLog(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val motorcycleId: Int,
     val distance: Int,
     val date: Long,
-): Parcelable
-
-fun getUpdatedBikeDistance(bike: Motorcycle): Int
-{
-    return if(bike.logs.distance.isNotEmpty()) bike.logs.distance.first().distance - bike.start_km else 0
-}
+)

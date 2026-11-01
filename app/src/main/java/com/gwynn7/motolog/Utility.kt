@@ -9,9 +9,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -59,8 +57,8 @@ object UnitHelper {
     fun getDistanceText(context: Context) = if (distance == Distance.MILES) context.getString(R.string.miles_undercase) else distance.value
     fun getCurrency() = currency.value
 
-    fun loadData(context: Context) {
-        CoroutineScope(Dispatchers.Main).launch {
+    fun loadData(context: Context, scope: CoroutineScope) {
+        scope.launch {
             context.settings.data.map { settings ->
                 val dist = settings[distanceKey] ?: Distance.KM.value
                 val curr = settings[currencyKey] ?: Currency.EUR.value
@@ -72,22 +70,24 @@ object UnitHelper {
         }
     }
 
-    fun saveDistance(context: Context, newDistance: Distance) {
+    fun saveDistance(context: Context, scope: CoroutineScope, newDistance: Distance) {
         distance = newDistance
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch(Dispatchers.IO) {
             context.settings.edit { settings -> settings[distanceKey] = newDistance.value }
         }
     }
 
-    fun saveCurrency(context: Context, newCurrency: Currency) {
+    fun saveCurrency(context: Context, scope: CoroutineScope, newCurrency: Currency) {
         currency = newCurrency
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch(Dispatchers.IO) {
             context.settings.edit { settings -> settings[currencyKey] = newCurrency.value }
         }
     }
 
-    private fun fromDistance(value: String): Distance = Distance.entries.first { it.value == value }
-    private fun fromCurrency(value: String): Currency = Currency.entries.first { it.value == value }
+    private fun fromDistance(value: String): Distance =
+        Distance.entries.firstOrNull { it.value == value } ?: Distance.KM
+    private fun fromCurrency(value: String): Currency =
+        Currency.entries.firstOrNull { it.value == value } ?: Currency.EUR
 }
 
 fun longToDateString(date: Long): String {
@@ -140,8 +140,7 @@ fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap {
 }
 
 fun deleteImage(image: Uri?) {
-    if (image != null) {
-        val oldFile = File(image.path!!)
-        if (oldFile.exists()) oldFile.delete()
-    }
+    val path = image?.path ?: return
+    val oldFile = File(path)
+    if (oldFile.exists()) oldFile.delete()
 }

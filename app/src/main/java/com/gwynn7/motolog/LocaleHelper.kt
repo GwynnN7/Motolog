@@ -1,17 +1,11 @@
 package com.gwynn7.motolog
 
 import android.content.Context
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
 object LocaleHelper {
-    private val languageKey = stringPreferencesKey("language")
+    private const val PREFS_NAME = "locale_prefs"
+    private const val KEY_LANGUAGE = "language"
 
     enum class Language(val value: String) {
         ITA("it"),
@@ -19,13 +13,7 @@ object LocaleHelper {
     }
 
     fun onAttach(context: Context): Context {
-        // We still need a synchronous value here because attachBaseContext is called before onCreate
-        // and needs to return a Context immediately. 
-        // For simple settings like language, runBlocking is sometimes used here, 
-        // but it's better to provide a default and update dynamically if possible.
-        // However, changing the language requires an activity recreate anyway.
-        val lang = getLanguage(context)
-        return setLocale(context, lang)
+        return updateResources(context, getLanguage(context).value)
     }
 
     fun getLanguage(context: Context): Language {
@@ -38,15 +26,15 @@ object LocaleHelper {
     }
 
     private fun getPersistedData(context: Context, defaultLanguage: String): String {
-        return runBlocking {
-            context.settings.data.first()[languageKey] ?: defaultLanguage
-        }
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getString(KEY_LANGUAGE, defaultLanguage) ?: defaultLanguage
     }
 
     private fun persist(context: Context, language: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            context.settings.edit { settings -> settings[languageKey] = language }
-        }
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putString(KEY_LANGUAGE, language)
+            .apply()
     }
 
     private fun updateResources(context: Context, language: String): Context {
@@ -60,5 +48,6 @@ object LocaleHelper {
         return context.createConfigurationContext(configuration)
     }
 
-    private fun fromLanguage(value: String): Language = Language.entries.first { it.value == value }
+    private fun fromLanguage(value: String): Language =
+        Language.entries.firstOrNull { it.value == value } ?: Language.ENG
 }

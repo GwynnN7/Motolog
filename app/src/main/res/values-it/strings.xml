@@ -148,7 +148,6 @@
     <string name="confirm_import">Vuoi importare nuovi dati?</string>
     <string name="overwrite_data">I dati attuali verrano eliminati e sovrascritti, quindi assicurati di selezionare il file corretto!</string>
     <string name="backup_import_error">Importazione backup fallita</string>
-    <string name="check_permissions">Assicurati di aver dato i Permessi di Storage a questa applicazione. Se non lo hai fatto, vai nelle impostazioni dell\'applicazione per cambiarli!</string>
     <string name="unknown_backup_import_error">C\'è stato un errore sconosciuto nell\'importazione del tuo backup. Prova di nuovo!</string>
     <string name="unknown_backup_export_error">C\'è stato un errore sconosciuto nell\'esportazione del tuo backup. Prova di nuovo!</string>
     <string name="backup_export_error">Esportazione backup fallita</string>

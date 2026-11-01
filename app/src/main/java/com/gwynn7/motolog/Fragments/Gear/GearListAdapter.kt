@@ -2,7 +2,6 @@ package com.gwynn7.motolog.Fragments.Gear
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.net.toFile
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,6 +11,7 @@ import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.databinding.GearRowBinding
 import com.gwynn7.motolog.longToDateString
+import java.io.File
 
 class GearListAdapter : ListAdapter<Gear, GearListAdapter.ViewHolder>(DiffCallback()) {
 
@@ -41,7 +41,7 @@ class GearListAdapter : ListAdapter<Gear, GearListAdapter.ViewHolder>(DiffCallba
             val price = String.format("%.2f%s", currentItem.price, UnitHelper.getCurrency())
             twGearPrice.text = price
 
-            if (currentItem.listImage != null && currentItem.listImage!!.toFile().exists()) {
+            if (currentItem.listImage?.path?.let(::File)?.exists() == true) {
                 gearImage.setImageURI(currentItem.listImage)
             } else {
                 gearImage.setImageResource(R.drawable.helmet_list)

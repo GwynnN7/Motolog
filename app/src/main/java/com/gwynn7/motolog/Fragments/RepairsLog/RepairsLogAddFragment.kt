@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.gwynn7.motolog.Models.Motorcycle
 import com.gwynn7.motolog.Models.RepairsLog
 import com.gwynn7.motolog.Path
 import com.gwynn7.motolog.R
@@ -26,6 +27,7 @@ import com.gwynn7.motolog.dateFromLong
 import com.gwynn7.motolog.longFromDate
 import com.gwynn7.motolog.repairColors
 import com.gwynn7.motolog.showToast
+import com.gwynn7.motolog.stop
 import java.util.Calendar
 import java.util.Date
 
@@ -33,130 +35,123 @@ class RepairsLogAddFragment : Fragment(), MenuProvider {
     private var _binding: RepairslogAddBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<RepairsLogAddFragmentArgs>()
-    private val mMotorcycleViewModel: MotorcycleViewModel by viewModels()
+    private val motorcycleViewModel: MotorcycleViewModel by viewModels()
     private var savedDate: Long = Date().time
-    private var currentPath: Path = Path.Add
+    private var currentBike: Motorcycle? = null
+    private var currentLog: RepairsLog? = null
+    private var formBound = false
+
+    private val path get() = if (args.logId == NO_LOG_ID) Path.Add else Path.Edit
+    private val repairType get() = args.repairIndex.coerceIn(repairColors.indices)
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = RepairslogAddBinding.inflate(inflater, container, false)
-
-
-        binding.btDeleteRepair.setOnClickListener {
-            deleteLog()
-        }
-
+        binding.btDeleteRepair.setOnClickListener { deleteLog() }
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        if (args.logIndex != -1) currentPath = Path.Edit
-
-        binding.textViewRepairDistance.text = capitalize(
-            getString(R.string.bike_repair_distance, UnitHelper.getDistanceText(requireContext()))
-        )
-
-        binding.etRepairDistance.setText(
-            String.format("%d", args.currentBike.personal_km + args.currentBike.start_km)
-        )
-
-        if (currentPath == Path.Edit) {
-            val currentLog = args.currentBike.logs.maintenance[args.logIndex]
-            savedDate = currentLog.date
-
-            binding.etRepairType.setText(currentLog.typeText)
-            binding.etRepairNotes.setText(currentLog.notes)
-            binding.etRepairPrice.setText(currentLog.price.toString())
-            binding.etRepairDistance.setText(currentLog.repair_km.toString())
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        motorcycleViewModel.getMotorcycle(args.bikeId).observe(viewLifecycleOwner) { bike ->
+            currentBike = bike
+            if (bike == null) stop(activity) else bindFormWhenReady()
         }
-
-        binding.ivRepairImage.setColorFilter(
-            ContextCompat.getColor(requireContext(), repairColors[args.repairIndex])
-        )
-
-        binding.dpRepairDate.maxDate = Date().time
-        binding.dpRepairDate.init(
-            dateFromLong(savedDate, Calendar.YEAR),
-            dateFromLong(savedDate, Calendar.MONTH),
-            dateFromLong(savedDate, Calendar.DAY_OF_MONTH)
-        ) { _, year, month, dayOfMonth ->
-            savedDate = longFromDate(year, month, dayOfMonth)
+        motorcycleViewModel.getRepairsLogs(args.bikeId).observe(viewLifecycleOwner) { logs ->
+            if (path == Path.Edit) currentLog = logs.firstOrNull { it.id == args.logId }
+            if (path == Path.Edit && currentLog == null) {
+                findNavController().navigateUp()
+                return@observe
+            }
+            bindFormWhenReady()
         }
-
-        binding.btDeleteRepair.visibility = if (currentPath == Path.Edit) View.VISIBLE else View.GONE
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.save_menu, menu)
     }
 
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        if (menuItem.itemId == R.id.save_menu) {
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
+        R.id.save_menu -> {
             insertDataToDatabase()
-            return true
+            true
         }
-        return false
+        else -> false
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun bindFormWhenReady() {
+        if (formBound) return
+        val bike = currentBike ?: return
+        val log = if (path == Path.Edit) currentLog ?: return else null
+        formBound = true
+        savedDate = log?.date ?: savedDate
+        binding.textViewRepairDistance.text = capitalize(
+            getString(R.string.bike_repair_distance, UnitHelper.getDistanceText(requireContext()))
+        )
+        binding.etRepairDistance.setText((log?.repair_km ?: bike.start_km + bike.personal_km).toString())
+        binding.etRepairType.setText(log?.typeText.orEmpty())
+        binding.etRepairNotes.setText(log?.notes.orEmpty())
+        binding.etRepairPrice.setText(log?.price?.toString().orEmpty())
+        binding.ivRepairImage.setColorFilter(ContextCompat.getColor(requireContext(), repairColors[repairType]))
+        binding.dpRepairDate.maxDate = Date().time
+        binding.dpRepairDate.init(
+            dateFromLong(savedDate, Calendar.YEAR),
+            dateFromLong(savedDate, Calendar.MONTH),
+            dateFromLong(savedDate, Calendar.DAY_OF_MONTH)
+        ) { _, year, month, dayOfMonth -> savedDate = longFromDate(year, month, dayOfMonth) }
+        binding.btDeleteRepair.visibility = if (path == Path.Edit) View.VISIBLE else View.GONE
     }
 
     private fun insertDataToDatabase() {
+        val bike = currentBike ?: return
         val type = binding.etRepairType.text.toString().trim()
         val notes = binding.etRepairNotes.text.toString().trim()
-        val price = binding.etRepairPrice.text.toString()
-        val distance = binding.etRepairDistance.text.toString()
+        val price = binding.etRepairPrice.text.toString().trim().toDoubleOrNull()
+        val distance = binding.etRepairDistance.text.toString().trim().toIntOrNull()
+        if (type.isEmpty() || notes.isEmpty() || price == null || !price.isFinite() || price < 0 ||
+            distance == null || distance < 0
+        ) {
+            showToast(requireContext(), getString(R.string.fill_fields))
+            return
+        }
 
-        if (inputCheck(type, notes, price, distance)) {
-            val bike = args.currentBike
-            val repairsLogList = bike.logs.maintenance.toMutableList()
-            val distanceInt = distance.toInt()
-
-            val alert = MaterialAlertDialogBuilder(requireContext())
-                .setPositiveButton(getString(R.string.ok), null)
-                .setTitle(getString(R.string.repairlog_nomatch))
-
-            if (dateFromLong(savedDate, Calendar.YEAR) < bike.year) {
+        val alert = MaterialAlertDialogBuilder(requireContext())
+            .setPositiveButton(getString(R.string.ok), null)
+            .setTitle(getString(R.string.repairlog_nomatch))
+        when {
+            dateFromLong(savedDate, Calendar.YEAR) < bike.year -> {
                 alert.setMessage(getString(R.string.log_nomatch_date)).show()
                 return
             }
-
-            if (distanceInt < bike.start_km) {
+            distance < bike.start_km -> {
                 alert.setMessage(getString(R.string.log_nomatch_distance)).show()
                 return
             }
+        }
 
-            if (currentPath == Path.Edit) repairsLogList.removeAt(args.logIndex)
-            repairsLogList.add(RepairsLog(args.repairIndex, type, notes, savedDate, distanceInt, price.toDouble()))
-
-            bike.logs.maintenance = repairsLogList.sortedBy { log -> log.date }.reversed()
-            mMotorcycleViewModel.updateMotorcycle(bike, null)
-
-            showToast(requireContext(), getString(R.string.log_saved))
-            findNavController().navigateUp()
-        } else showToast(requireContext(), getString(R.string.fill_fields))
-    }
-
-    private fun inputCheck(type: String, notes: String, price: String, distance: String): Boolean {
-        return type.isNotEmpty() && notes.isNotEmpty() && price.isNotEmpty() && distance.isNotEmpty()
+        motorcycleViewModel.saveRepairsLog(
+            RepairsLog(
+                id = currentLog?.id ?: 0,
+                motorcycleId = bike.id,
+                typeIndex = repairType,
+                typeText = type,
+                notes = notes,
+                date = savedDate,
+                repair_km = distance,
+                price = price
+            )
+        )
+        showToast(requireContext(), getString(R.string.log_saved))
+        findNavController().navigateUp()
     }
 
     private fun deleteLog() {
+        val log = currentLog ?: return
         MaterialAlertDialogBuilder(requireContext())
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                val bike = args.currentBike
-                val repairsLogList = bike.logs.maintenance.toMutableList()
-                repairsLogList.removeAt(args.logIndex)
-                bike.logs.maintenance = repairsLogList.sortedBy { log -> log.date }.reversed()
-                mMotorcycleViewModel.updateMotorcycle(bike, null)
+                motorcycleViewModel.deleteRepairsLog(log)
                 showToast(requireContext(), getString(R.string.log_removed))
                 findNavController().navigateUp()
             }
@@ -164,5 +159,14 @@ class RepairsLogAddFragment : Fragment(), MenuProvider {
             .setTitle(getString(R.string.title_question_remove_log))
             .setMessage(getString(R.string.description_question_remove_log))
             .show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private companion object {
+        const val NO_LOG_ID = -1
     }
 }

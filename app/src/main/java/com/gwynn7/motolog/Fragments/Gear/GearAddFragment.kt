@@ -68,8 +68,8 @@ class GearAddFragment : Fragment(), MenuProvider {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         if (args.currentGear != null) currentPath = Path.Edit
 
@@ -117,26 +117,22 @@ class GearAddFragment : Fragment(), MenuProvider {
     private fun insertDataToDatabase() {
         val manufacturer = binding.etGearManufacturer.text.toString().trim()
         val model = binding.etGearModel.text.toString().trim()
-        val price = binding.etGearPrice.text.toString()
+        val price = binding.etGearPrice.text.toString().trim().toDoubleOrNull()
 
-        if (inputCheck(manufacturer, model, price)) {
+        if (manufacturer.isNotEmpty() && model.isNotEmpty() && price != null && price >= 0 && price.isFinite()) {
             if (currentPath == Path.Add) {
-                mGearViewModel.addGear(Gear(0, manufacturer, model, price.toDouble(), savedDate), tempBitmap)
+                mGearViewModel.addGear(Gear(manufacturer = manufacturer, model = model, price = price, date = savedDate), tempBitmap)
                 showToast(requireContext(), getString(R.string.gear_added), Toast.LENGTH_LONG)
             } else {
                 val updatedGear = args.currentGear!!.copy(
                     manufacturer = manufacturer, model = model,
-                    price = price.toDouble(), date = savedDate
+                    price = price, date = savedDate
                 )
                 mGearViewModel.updateGear(updatedGear, tempBitmap, bShouldRemoveImage)
                 showToast(requireContext(), getString(R.string.gear_save))
             }
             findNavController().navigateUp()
         } else showToast(requireContext(), getString(R.string.fill_fields))
-    }
-
-    private fun inputCheck(manufacturer: String, model: String, price: String): Boolean {
-        return manufacturer.isNotEmpty() && model.isNotEmpty() && price.isNotEmpty()
     }
 
     private fun deleteGear() {

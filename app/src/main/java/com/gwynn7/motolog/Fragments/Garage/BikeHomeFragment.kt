@@ -8,10 +8,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -24,11 +23,12 @@ import com.gwynn7.motolog.databinding.BikeHomeBinding
 import com.gwynn7.motolog.formatThousand
 import com.gwynn7.motolog.showToast
 import com.gwynn7.motolog.stop
+import java.io.File
 
 class BikeHomeFragment : Fragment(), MenuProvider {
     private var _binding: BikeHomeBinding? = null
     private val binding get() = _binding!!
-    private val mMotorcycleViewModel: MotorcycleViewModel by viewModels()
+    private val mMotorcycleViewModel: MotorcycleViewModel by activityViewModels()
     private lateinit var currentBike: Motorcycle
 
     override fun onCreateView(
@@ -55,21 +55,20 @@ class BikeHomeFragment : Fragment(), MenuProvider {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        val bikeId = MotorcycleViewModel.currentBikeId
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val bikeId = mMotorcycleViewModel.selectedBikeId
         if (bikeId == null) {
             stop(activity)
             return
         }
 
         val bikeData = mMotorcycleViewModel.getMotorcycle(bikeId)
-        bikeData.observe(viewLifecycleOwner) { bikes ->
-            if (bikes.isNotEmpty()) {
-                currentBike = bikes.first()
+        bikeData.observe(viewLifecycleOwner) { bike ->
+            if (bike != null) {
+                currentBike = bike
 
-                if (currentBike.image != null && !currentBike.image!!.toFile().exists()) {
+                if (currentBike.image?.path?.let(::File)?.exists() == false) {
                     mMotorcycleViewModel.updateMotorcycle(currentBike, null, true)
                 }
 
@@ -86,8 +85,15 @@ class BikeHomeFragment : Fragment(), MenuProvider {
                 binding.totalBikeDistance.text = capitalize(getString(R.string.total_bike_distance, UnitHelper.getDistanceText(requireContext())))
                 binding.personalBikeDistance.text = capitalize(getString(R.string.personal_bike_distance, UnitHelper.getDistanceText(requireContext())))
 
-                if (currentBike.image != null) binding.bikeImage.setImageURI(currentBike.image)
-                else {
+                if (currentBike.image != null) {
+                    binding.bikeImage.setImageURI(currentBike.image)
+                    binding.cvBikeImage.radius = 115 * resources.displayMetrics.density
+                    binding.cvBikeImage.scaleX = 1F
+                    binding.cvBikeImage.scaleY = 1F
+                    binding.bikeImage.scaleX = 1F
+                    binding.bikeImage.scaleY = 1F
+                    binding.bikeImage.setPadding(0, 0, 0, 0)
+                } else {
                     binding.bikeImage.setImageResource(R.drawable.bike_home)
                     binding.cvBikeImage.radius = 0F
                     binding.cvBikeImage.scaleX = 1.3F
@@ -107,6 +113,7 @@ class BikeHomeFragment : Fragment(), MenuProvider {
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        if (!::currentBike.isInitialized) return false
         when (menuItem.itemId) {
             R.id.edit_show_menu -> {
                 val action = BikeHomeFragmentDirections.bikehomeToBikeedit(currentBike)

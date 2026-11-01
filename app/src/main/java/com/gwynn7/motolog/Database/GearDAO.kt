@@ -24,5 +24,5 @@ interface GearDAO {
     fun readAllData(): LiveData<List<Gear>>
 
     @Query("SELECT * FROM gear WHERE id = :id")
-    fun getGear(id: Int): LiveData<List<Gear>>
+    fun getGear(id: Int): LiveData<Gear?>
 }

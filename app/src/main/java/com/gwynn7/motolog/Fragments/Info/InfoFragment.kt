@@ -9,11 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.gwynn7.motolog.Models.Motorcycle
+import com.gwynn7.motolog.Models.ModsLog
+import com.gwynn7.motolog.Models.RepairsLog
 import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
@@ -26,8 +28,10 @@ import java.util.Calendar
 class InfoFragment : Fragment(), MenuProvider {
     private var _binding: InfoBinding? = null
     private val binding get() = _binding!!
-    private val mMotorcycleViewModel: MotorcycleViewModel by viewModels()
+    private val mMotorcycleViewModel: MotorcycleViewModel by activityViewModels()
     private lateinit var currentBike: Motorcycle
+    private var repairsLogs: List<RepairsLog> = emptyList()
+    private var modsLogs: List<ModsLog> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,14 +40,17 @@ class InfoFragment : Fragment(), MenuProvider {
         _binding = InfoBinding.inflate(inflater, container, false)
 
         binding.btEditEngine.setOnClickListener {
+            if (!::currentBike.isInitialized) return@setOnClickListener
             val action = InfoFragmentDirections.infoToEditengine(currentBike)
             findNavController().navigate(action)
         }
         binding.btEditExpiry.setOnClickListener {
+            if (!::currentBike.isInitialized) return@setOnClickListener
             val action = InfoFragmentDirections.infoToEditexpiry(currentBike)
             findNavController().navigate(action)
         }
         binding.btEditInfo.setOnClickListener {
+            if (!::currentBike.isInitialized) return@setOnClickListener
             val action = InfoFragmentDirections.infoToEditinfo(currentBike)
             findNavController().navigate(action)
         }
@@ -53,19 +60,18 @@ class InfoFragment : Fragment(), MenuProvider {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        val bikeId = MotorcycleViewModel.currentBikeId
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val bikeId = mMotorcycleViewModel.selectedBikeId
         if (bikeId == null) {
             stop(activity)
             return
         }
 
         val bikeData = mMotorcycleViewModel.getMotorcycle(bikeId)
-        bikeData.observe(viewLifecycleOwner) { bikes ->
-            if (bikes.isNotEmpty()) {
-                currentBike = bikes.first()
+        bikeData.observe(viewLifecycleOwner) { bike ->
+            if (bike != null) {
+                currentBike = bike
 
                 binding.bikeCc.text = currentBike.info.engine_cc.toString()
                 binding.bikeHp.text = currentBike.info.horse_power.toString()
@@ -83,6 +89,8 @@ class InfoFragment : Fragment(), MenuProvider {
                 binding.bikeInspection.text = if (currentBike.expiry.inspection > currentTime) longToDateString(currentBike.expiry.inspection) else getString(R.string.not_updated)
             } else stop(activity)
         }
+        mMotorcycleViewModel.getRepairsLogs(bikeId).observe(viewLifecycleOwner) { repairsLogs = it }
+        mMotorcycleViewModel.getModsLogs(bikeId).observe(viewLifecycleOwner) { modsLogs = it }
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -90,16 +98,12 @@ class InfoFragment : Fragment(), MenuProvider {
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        if (!::currentBike.isInitialized) return false
         if (menuItem.itemId == R.id.money_menu) {
             val dialogBinding = CostDialogBinding.inflate(layoutInflater)
 
-            var totalMaintenanceMoney = 0.0
-            val maintenanceList = currentBike.logs.maintenance
-            for (repair in maintenanceList) totalMaintenanceMoney += repair.price
-
-            var totalModsMoney = 0.0
-            val modsList = currentBike.logs.mods
-            for (mod in modsList) totalModsMoney += mod.price
+            val totalMaintenanceMoney = repairsLogs.sumOf { it.price }
+            val totalModsMoney = modsLogs.sumOf { it.price }
 
             dialogBinding.maintenanceCost.text = String.format("%.2f%s", totalMaintenanceMoney, UnitHelper.getCurrency())
             dialogBinding.modsCost.text = String.format("%.2f%s", totalModsMoney, UnitHelper.getCurrency())

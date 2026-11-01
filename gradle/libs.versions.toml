@@ -1,7 +1,7 @@
 [versions]
-agp = "9.0.1"
-kotlin = "2.1.10"
-ksp = "2.1.10-1.0.30"
+agp = "9.5.0"
+kotlin = "2.2.10"
+ksp = "2.3.6"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -10,14 +10,12 @@ appcompat = "1.7.1"
 material = "1.12.0"
 activity = "1.13.0"
 constraintlayout = "2.2.1"
-navigation = "2.8.8"
+navigation = "2.9.6"
 gridlayout = "1.0.0"
 cardview = "1.0.0"
 room = "2.7.1"
 lifecycle = "2.8.7"
-gson = "2.11.0"
 imageCropper = "4.6.0"
-roomBackup = "1.0.1"
 datastore = "1.1.4"
 fragmentKtx = "1.8.6"
 
@@ -45,9 +43,7 @@ androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecy
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-compiler = { group = "androidx.lifecycle", name = "lifecycle-compiler", version.ref = "lifecycle" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 image-cropper = { group = "com.vanniktech", name = "android-image-cropper", version.ref = "imageCropper" }
-room-backup = { group = "de.raphaelebner", name = "roomdatabasebackup", version.ref = "roomBackup" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

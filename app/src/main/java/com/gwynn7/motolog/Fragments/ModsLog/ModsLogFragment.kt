@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.gwynn7.motolog.Models.Motorcycle
 import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
 import com.gwynn7.motolog.databinding.ModslogListBinding
 import com.gwynn7.motolog.stop
@@ -16,43 +15,38 @@ import com.gwynn7.motolog.stop
 class ModsLogFragment : Fragment() {
     private var _binding: ModslogListBinding? = null
     private val binding get() = _binding!!
-    private val mMotorcycleViewModel: MotorcycleViewModel by viewModels()
-    private lateinit var currentBike: Motorcycle
+    private val motorcycleViewModel: MotorcycleViewModel by activityViewModels()
+    private lateinit var adapter: ModsLogAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = ModslogListBinding.inflate(inflater, container, false)
-
-        binding.fabAddModsLog.setOnClickListener {
-            val action = ModsLogFragmentDirections.modslogToModsadd(currentBike)
-            findNavController().navigate(action)
-        }
-
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        val adapter = ModsLogAdapter()
-        binding.rwModslogs.adapter = adapter
-        binding.rwModslogs.layoutManager = LinearLayoutManager(requireContext())
-
-        val bikeId = MotorcycleViewModel.currentBikeId
-        if (bikeId == null) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val bikeId = motorcycleViewModel.selectedBikeId ?: run {
             stop(activity)
             return
         }
 
-        val bikeData = mMotorcycleViewModel.getMotorcycle(bikeId)
-        bikeData.observe(viewLifecycleOwner) { bikes ->
-            if (bikes.isNotEmpty()) {
-                currentBike = bikes.first()
-                binding.placeholder.visibility = if (currentBike.logs.mods.isEmpty()) View.VISIBLE else View.GONE
-                adapter.bindBike(currentBike)
-            } else stop(activity)
+        adapter = ModsLogAdapter { log ->
+            findNavController().navigate(ModsLogFragmentDirections.modslogToModsadd(bikeId, log.id))
+        }
+        binding.rwModslogs.layoutManager = LinearLayoutManager(requireContext())
+        binding.rwModslogs.adapter = adapter
+        binding.fabAddModsLog.setOnClickListener {
+            findNavController().navigate(ModsLogFragmentDirections.modslogToModsadd(bikeId))
+        }
+
+        motorcycleViewModel.getMotorcycle(bikeId).observe(viewLifecycleOwner) { bike ->
+            if (bike == null) stop(activity)
+        }
+        motorcycleViewModel.getModsLogs(bikeId).observe(viewLifecycleOwner) { logs ->
+            binding.placeholder.visibility = if (logs.isEmpty()) View.VISIBLE else View.GONE
+            adapter.submitList(logs)
         }
     }
 

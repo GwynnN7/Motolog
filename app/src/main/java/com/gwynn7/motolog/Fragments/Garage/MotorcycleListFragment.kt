@@ -37,14 +37,6 @@ class MotorcycleListFragment : Fragment(), MenuProvider {
             findNavController().navigate(action)
         }
 
-        requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
         val adapter = MotorcycleListAdapter()
         binding.rwMotorcycles.adapter = adapter
         binding.rwMotorcycles.layoutManager = LinearLayoutManager(requireContext())
@@ -53,6 +45,10 @@ class MotorcycleListFragment : Fragment(), MenuProvider {
             binding.placeholder.visibility = if (motorcycles.isEmpty()) View.VISIBLE else View.GONE
             adapter.submitList(motorcycles.reversed())
         }
+
+        requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        return binding.root
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -63,9 +59,7 @@ class MotorcycleListFragment : Fragment(), MenuProvider {
         if (menuItem.itemId == R.id.distance_menu) {
             val dialogBinding = DistanceDialogBinding.inflate(layoutInflater)
 
-            var totalDistance = 0
-            val bikesList = mMotorcycleViewModel.readAllData.value!!
-            for (bike in bikesList) totalDistance += bike.personal_km
+            val totalDistance = mMotorcycleViewModel.readAllData.value.orEmpty().sumOf { it.personal_km }
 
             dialogBinding.distance.text = String.format(
                 "%s %s", formatThousand(totalDistance), UnitHelper.getDistance()

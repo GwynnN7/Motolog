@@ -3,7 +3,6 @@ package com.gwynn7.motolog.ViewModel
 import android.app.Application
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Environment
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -17,13 +16,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
 import java.util.UUID
 
 class GearViewModel(application: Application) : AndroidViewModel(application) {
     val readAllData: LiveData<List<Gear>>
     private val repository: GearRepository
-    private var imageDirectory: File?
+    private val imageDirectory: File
     private val imageSize = 1200
     private val listImageSize = 350
 
@@ -34,50 +32,45 @@ class GearViewModel(application: Application) : AndroidViewModel(application) {
         readAllData = repository.readAllData
     }
 
-    fun addGear(gear: Gear, bitmap: Bitmap?){
-        if(bitmap != null) {
-            gear.image = saveImage(bitmap, imageSize)
-            gear.listImage = saveImage(bitmap, listImageSize)
-        }
+    fun addGear(gear: Gear, bitmap: Bitmap?) {
         viewModelScope.launch(Dispatchers.IO) {
+            if (bitmap != null) {
+                gear.image = saveImage(bitmap, imageSize)
+                gear.listImage = saveImage(bitmap, listImageSize)
+            }
             repository.addGear(gear)
         }
     }
 
-    fun updateGear(gear: Gear, bitmap: Bitmap?, removeImageOnNull: Boolean = false){
-        if(bitmap != null){
-            deleteImage(gear)
-            gear.image = saveImage(bitmap, imageSize)
-            gear.listImage = saveImage(bitmap, listImageSize)
-        }
-        else if(removeImageOnNull) {
-            deleteImage(gear)
-            gear.image = null
-            gear.listImage = null
-        }
-
+    fun updateGear(gear: Gear, bitmap: Bitmap?, removeImageOnNull: Boolean = false) {
         viewModelScope.launch(Dispatchers.IO) {
+            if (bitmap != null) {
+                deleteImage(gear)
+                gear.image = saveImage(bitmap, imageSize)
+                gear.listImage = saveImage(bitmap, listImageSize)
+            } else if (removeImageOnNull) {
+                deleteImage(gear)
+                gear.image = null
+                gear.listImage = null
+            }
             repository.updateGear(gear)
         }
     }
 
-    fun deleteGear(gear: Gear){
-        deleteImage(gear)
-        viewModelScope.launch(Dispatchers.IO){
+    fun deleteGear(gear: Gear) {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.deleteGear(gear)
+            deleteImage(gear)
         }
     }
 
-    fun getGear(id: Int): LiveData<List<Gear>> {
-        return repository.getGear(id)
-    }
+    fun getGear(id: Int): LiveData<Gear?> = repository.getGear(id)
 
     private fun saveImage(bitmap: Bitmap, size: Int): Uri {
-        val filePath = File(imageDirectory, String.format("%s.jpg", UUID.randomUUID().toString()))
-        val outputStream: OutputStream = FileOutputStream(filePath)
-        getResizedBitmap(bitmap, size).compress(Bitmap.CompressFormat.JPEG, 85, outputStream)
-        outputStream.flush()
-        outputStream.close()
+        val filePath = File(imageDirectory, "${UUID.randomUUID()}.jpg")
+        FileOutputStream(filePath).use { outputStream ->
+            getResizedBitmap(bitmap, size).compress(Bitmap.CompressFormat.JPEG, 85, outputStream)
+        }
         return filePath.toUri()
     }
 

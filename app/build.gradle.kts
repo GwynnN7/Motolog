@@ -61,10 +61,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     implementation(libs.androidx.espresso.core)
 
-    implementation(libs.gson)
     implementation(libs.image.cropper)
-    implementation(libs.room.backup)
-
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)

@@ -36,14 +36,11 @@ class GearListFragment : Fragment(), MenuProvider {
             findNavController().navigate(action)
         }
 
-        requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val adapter = GearListAdapter()
         binding.rwGears.adapter = adapter
         binding.rwGears.layoutManager = LinearLayoutManager(requireContext())
@@ -52,6 +49,7 @@ class GearListFragment : Fragment(), MenuProvider {
             binding.placeholder.visibility = if (gears.isEmpty()) View.VISIBLE else View.GONE
             adapter.submitList(gears.sortedBy { gear -> gear.date }.reversed())
         }
+        requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -62,9 +60,7 @@ class GearListFragment : Fragment(), MenuProvider {
         if (menuItem.itemId == R.id.money_menu) {
             val dialogBinding = GearCostDialogBinding.inflate(layoutInflater)
 
-            var totalMoney = 0.0
-            val gearList = mGearViewModel.readAllData.value!!
-            for (gear in gearList) totalMoney += gear.price
+            val totalMoney = mGearViewModel.readAllData.value.orEmpty().sumOf { it.price }
 
             dialogBinding.cost.text = String.format("%.2f%s", totalMoney, UnitHelper.getCurrency())
 

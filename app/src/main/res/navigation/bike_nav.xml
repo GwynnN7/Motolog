@@ -104,12 +104,12 @@
             android:id="@+id/distanceadd_to_distancelog"
             app:destination="@id/distance_log" />
         <argument
-            android:name="logIndex"
+            android:name="logId"
             android:defaultValue="-1"
             app:argType="integer" />
         <argument
-            android:name="currentBike"
-            app:argType="com.gwynn7.motolog.Models.Motorcycle" />
+            android:name="bikeId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/mods_log_add"
@@ -117,12 +117,12 @@
         android:label="@string/mods_log"
         tools:layout="@layout/modslog_add">
         <argument
-            android:name="logIndex"
+            android:name="logId"
             android:defaultValue="-1"
             app:argType="integer" />
         <argument
-            android:name="currentBike"
-            app:argType="com.gwynn7.motolog.Models.Motorcycle" />
+            android:name="bikeId"
+            app:argType="integer" />
         <action
             android:id="@+id/modsadd_to_modslog"
             app:destination="@id/mods_log" />
@@ -136,13 +136,14 @@
             android:id="@+id/repairsadd_to_repairsList"
             app:destination="@id/repairs_log" />
         <argument
-            android:name="currentBike"
-            app:argType="com.gwynn7.motolog.Models.Motorcycle" />
-        <argument
-            android:name="repairIndex"
+            android:name="bikeId"
             app:argType="integer" />
         <argument
-            android:name="logIndex"
+            android:name="repairIndex"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="logId"
             app:argType="integer"
             android:defaultValue="-1" />
     </fragment>

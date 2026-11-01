@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,6 +21,7 @@ import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.ViewModel.GearViewModel
 import com.gwynn7.motolog.databinding.GearShowBinding
 import com.gwynn7.motolog.longToDateString
+import java.io.File
 
 class GearShowFragment : Fragment(), MenuProvider {
     private var _binding: GearShowBinding? = null
@@ -41,15 +41,14 @@ class GearShowFragment : Fragment(), MenuProvider {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val gearData = mGearViewModel.getGear(args.currentGear.id)
-        gearData.observe(viewLifecycleOwner) { gears ->
-            if (gears.isNotEmpty()) {
-                currentGear = gears.first()
+        gearData.observe(viewLifecycleOwner) { gear ->
+            if (gear != null) {
+                currentGear = gear
 
-                if (currentGear.image != null && !currentGear.image!!.toFile().exists()) {
+                if (currentGear.image?.path?.let(::File)?.exists() == false) {
                     mGearViewModel.updateGear(currentGear, null, true)
                 }
 
@@ -71,6 +70,7 @@ class GearShowFragment : Fragment(), MenuProvider {
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        if (!::currentGear.isInitialized) return false
         when (menuItem.itemId) {
             R.id.edit_show_menu -> {
                 val action = GearShowFragmentDirections.gearshowToGearadd(currentGear)
@@ -93,7 +93,7 @@ class GearShowFragment : Fragment(), MenuProvider {
     private fun deleteGear() {
         MaterialAlertDialogBuilder(requireContext())
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                mGearViewModel.deleteGear(args.currentGear)
+                mGearViewModel.deleteGear(currentGear)
                 Toast.makeText(requireContext(), getString(R.string.gear_delete), Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.gearshow_to_gearlist)
             }

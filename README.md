@@ -19,7 +19,7 @@ A diary of your biker's life, to keep track of your journey with your bike âœŒðŸ
 
 #### How can i backup my data?
 
-You can export your data and save it locally or on your personal cloud service
+Use Export in Settings to create a single `.motolog` backup containing your motorcycle and gear data plus locally stored photos. Android's system file picker lets you choose where to save it, including a personal cloud provider. Import accepts this archive and legacy single-database backups.
 
 #### Does the app store any personal data?
 

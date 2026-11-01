@@ -23,7 +23,6 @@ import com.canhub.cropper.CropImageOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.gwynn7.motolog.Models.DistanceLog
 import com.gwynn7.motolog.Models.Motorcycle
-import com.gwynn7.motolog.Models.getUpdatedBikeDistance
 import com.gwynn7.motolog.Path
 import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
@@ -42,6 +41,7 @@ class MotorcycleAddFragment : Fragment() {
     private var currentPath: Path = Path.Add
     private var tempBitmap: Bitmap? = null
     private var bShouldRemoveImage: Boolean = false
+    private var distanceLogs: List<DistanceLog> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,6 +63,10 @@ class MotorcycleAddFragment : Fragment() {
 
             if (bike.image != null) binding.ibBikeImage.setImageURI(bike.image)
             else binding.ibBikeImage.setImageResource(R.drawable.add_photo)
+
+            mMotorcycleViewModel.getDistanceLogs(bike.id).observe(viewLifecycleOwner) { logs ->
+                distanceLogs = logs
+            }
         }
 
         binding.btDeleteMotorcycle.visibility = if (currentPath == Path.Edit) View.VISIBLE else View.INVISIBLE
@@ -111,8 +115,12 @@ class MotorcycleAddFragment : Fragment() {
         val startKm = binding.etBikeStartkm.text.toString()
 
         if (inputCheck(manufacturer, model, year)) {
-            val km = if (startKm.isEmpty()) 0 else startKm.toInt()
-            val yearInt = year.toInt()
+            val km = startKm.toIntOrNull() ?: 0
+            val yearInt = year.toIntOrNull()
+            if (km < 0 || yearInt == null) {
+                showToast(requireContext(), getString(R.string.fill_fields))
+                return
+            }
 
             if (yearInt > Calendar.getInstance().get(Calendar.YEAR)) {
                 showToast(requireContext(), getString(R.string.bike_future))
@@ -128,14 +136,18 @@ class MotorcycleAddFragment : Fragment() {
                     year = yearInt, start_km = km, personal_km = 0
                 )
 
-                if (motorcycle.logs.distance.any { log -> distanceLogsCheck(log, motorcycle.start_km, motorcycle.year) }) {
+                val invalidDistanceLogs = distanceLogs.filter { log ->
+                    distanceLogsCheck(log, motorcycle.start_km, motorcycle.year)
+                }
+                if (invalidDistanceLogs.isNotEmpty()) {
                     MaterialAlertDialogBuilder(requireContext())
                         .setPositiveButton(getString(R.string.delete_logs)) { _, _ ->
-                            motorcycle.logs.distance = motorcycle.logs.distance.filter { log ->
-                                !distanceLogsCheck(log, motorcycle.start_km, motorcycle.year)
-                            }
-                            motorcycle.personal_km = getUpdatedBikeDistance(motorcycle)
-                            mMotorcycleViewModel.updateMotorcycle(motorcycle, tempBitmap, bShouldRemoveImage)
+                            mMotorcycleViewModel.updateMotorcycle(
+                                motorcycle,
+                                tempBitmap,
+                                bShouldRemoveImage,
+                                invalidDistanceLogs
+                            )
                             showToast(requireContext(), getString(R.string.bike_saved))
                             findNavController().navigateUp()
                         }
@@ -145,12 +157,11 @@ class MotorcycleAddFragment : Fragment() {
                         .show()
                     return
                 } else {
-                    motorcycle.personal_km = getUpdatedBikeDistance(motorcycle)
                     mMotorcycleViewModel.updateMotorcycle(motorcycle, tempBitmap, bShouldRemoveImage)
                 }
                 showToast(requireContext(), getString(R.string.bike_saved))
             } else {
-                val motorcycle = Motorcycle(0, manufacturer, model, name, yearInt, km)
+                val motorcycle = Motorcycle(manufacturer = manufacturer, model = model, alias = name, year = yearInt, start_km = km)
                 mMotorcycleViewModel.addMotorcycle(motorcycle, tempBitmap)
                 showToast(requireContext(), getString(R.string.bike_add), Toast.LENGTH_LONG)
             }

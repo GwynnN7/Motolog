@@ -4,7 +4,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getString
-import androidx.core.net.toFile
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,6 +14,7 @@ import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.databinding.MotorcycleRowBinding
 import com.gwynn7.motolog.formatThousand
+import java.io.File
 
 class MotorcycleListAdapter : ListAdapter<Motorcycle, MotorcycleListAdapter.ViewHolder>(DiffCallback()) {
 
@@ -44,7 +44,7 @@ class MotorcycleListAdapter : ListAdapter<Motorcycle, MotorcycleListAdapter.View
             val distance = String.format("%s %s", formatThousand(currentItem.personal_km), UnitHelper.getDistance())
             twBikeDistance.text = distance
 
-            if (currentItem.listImage != null && currentItem.listImage!!.toFile().exists()) {
+            if (currentItem.listImage?.path?.let(::File)?.exists() == true) {
                 motorcycleImage.setImageURI(currentItem.listImage)
             } else {
                 motorcycleImage.setImageResource(R.drawable.bike)
@@ -52,7 +52,7 @@ class MotorcycleListAdapter : ListAdapter<Motorcycle, MotorcycleListAdapter.View
 
             cvBikeRow.setOnClickListener {
                 val bikeActivity = Intent(root.context, BikeActivity::class.java)
-                bikeActivity.putExtra("bike_id", currentItem.id)
+                bikeActivity.putExtra(BikeActivity.EXTRA_BIKE_ID, currentItem.id)
                 root.context.startActivity(bikeActivity)
             }
 

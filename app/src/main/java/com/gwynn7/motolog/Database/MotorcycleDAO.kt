@@ -24,5 +24,8 @@ interface MotorcycleDAO {
     fun readAllData(): LiveData<List<Motorcycle>>
 
     @Query("SELECT * FROM motorcycle WHERE id = :id")
-    fun getMotorcycle(id: Int): LiveData<List<Motorcycle>>
+    fun getMotorcycle(id: Int): LiveData<Motorcycle?>
+
+    @Query("SELECT * FROM motorcycle WHERE id = :id")
+    suspend fun findMotorcycle(id: Int): Motorcycle?
 }
