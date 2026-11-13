@@ -1,182 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gwynn7.motolog.Fragments.Info.EditInfoFragment">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cw_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:cardBackgroundColor="@color/dark_gray"
-            app:cardCornerRadius="25dp"
-            app:cardElevation="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/info_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="24dp"
-                    android:text="@string/info_title"
-                    android:textColor="@color/white"
-                    android:textStyle="bold|italic"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/info_title"
-                    android:layout_marginTop="12dp"
-                    android:paddingBottom="10dp">
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="30dp"
-                        android:layout_marginBottom="5dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textStyle="italic"
-                            android:text="@string/price"
-                            android:textAlignment="textEnd"
-                            android:layout_marginEnd="10dp"
-                            android:paddingEnd="10dp"
-                            android:textSize="16dp" />
-
-                        <EditText
-                            android:id="@+id/et_bike_price"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textColor="@color/white"
-                            android:textAlignment="textStart"
-                            android:layout_marginStart="10dp"
-                            android:paddingStart="5dp"
-                            android:inputType="numberDecimal"
-                            android:textStyle="bold"
-                            android:textSize="16dp"  />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="30dp"
-                        android:layout_marginBottom="5dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textStyle="italic"
-                            android:text="@string/license_plate"
-                            android:textAlignment="textEnd"
-                            android:layout_marginEnd="10dp"
-                            android:paddingEnd="10dp"
-                            android:textSize="16dp"/>
-
-                        <EditText
-                            android:id="@+id/et_bike_license_plate"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textColor="@color/white"
-                            android:textAlignment="textStart"
-                            android:textStyle="bold"
-                            android:layout_marginStart="10dp"
-                            android:paddingStart="5dp"
-                            android:textSize="16dp"  />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="30dp"
-                        android:layout_marginBottom="5dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textStyle="italic"
-                            android:text="@string/front_tire"
-                            android:textAlignment="textEnd"
-                            android:layout_marginEnd="10dp"
-                            android:paddingEnd="10dp"
-                            android:textSize="16dp"/>
-
-                        <EditText
-                            android:id="@+id/et_bike_front_tire"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textColor="@color/white"
-                            android:textAlignment="textStart"
-                            android:textStyle="bold"
-                            android:layout_marginStart="10dp"
-                            android:paddingStart="5dp"
-                            android:textSize="15dp"  />
-
-                    </TableRow>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="30dp"
-                        android:layout_marginBottom="5dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textStyle="italic"
-                            android:text="@string/rear_tire"
-                            android:paddingBottom="5dp"
-                            android:textAlignment="textEnd"
-                            android:layout_marginEnd="10dp"
-                            android:paddingEnd="10dp"
-                            android:textSize="16dp"/>
-
-                        <EditText
-                            android:id="@+id/et_bike_rear_tire"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textColor="@color/white"
-                            android:textAlignment="textStart"
-                            android:textStyle="bold"
-                            android:layout_marginStart="10dp"
-                            android:paddingStart="5dp"
-                            android:textSize="15dp"  />
-
-                    </TableRow>
-                </TableLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+    android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp" android:paddingBottom="32dp">
+        <TextView android:id="@+id/editor_heading" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceHeadlineSmall" android:text="@string/info"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceBodyMedium" android:text="@string/profile_optional_specs" android:layout_marginTop="8dp"/>
+        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.Material3.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:hint="@string/license_plate">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_bike_license_plate" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textCapCharacters" android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.Material3.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:hint="@string/front_tire">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_bike_front_tire" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="text" android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.Material3.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:hint="@string/rear_tire">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_bike_rear_tire" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="text" android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.Material3.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:hint="@string/profile_price_optional">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_bike_price" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton android:id="@+id/save_profile" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/save" android:layout_marginTop="24dp"/>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

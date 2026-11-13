@@ -1,32 +1,29 @@
 package com.gwynn7.motolog.ViewModel
 
 import android.app.Application
-import android.graphics.Bitmap
+import com.gwynn7.motolog.Database.DataAccess
 import android.net.Uri
-import com.gwynn7.motolog.deleteImage
-import androidx.core.net.toUri
+import com.gwynn7.motolog.photos.PhotoStore
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.SavedStateHandle
 import com.gwynn7.motolog.Database.MotorcycleDatabase
 import com.gwynn7.motolog.Models.DistanceLog
 import com.gwynn7.motolog.Models.ModsLog
 import com.gwynn7.motolog.Models.Motorcycle
 import com.gwynn7.motolog.Models.RepairsLog
 import com.gwynn7.motolog.Repository.MotorcycleRepository
-import com.gwynn7.motolog.getResizedBitmap
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileOutputStream
-import java.util.UUID
+import kotlinx.coroutines.async
+import kotlinx.coroutines.CancellationException
 
-class MotorcycleViewModel(application: Application) : AndroidViewModel(application) {
+class MotorcycleViewModel(application: Application, private val savedState: SavedStateHandle) : AndroidViewModel(application) {
     val readAllData: LiveData<List<Motorcycle>>
     private val repository: MotorcycleRepository
-    private val imageDirectory: File = File(application.filesDir, "pictures").apply { mkdirs() }
-    private val imageSize = 1200
-    private val listImageSize = 400
+    private val photos = PhotoStore(application)
 
     init {
         val db = MotorcycleDatabase.getDatabase(application)
@@ -34,42 +31,61 @@ class MotorcycleViewModel(application: Application) : AndroidViewModel(applicati
         readAllData = repository.readAllData
     }
 
-    fun addMotorcycle(motorcycle: Motorcycle, bitmap: Bitmap?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if(bitmap != null) {
-                motorcycle.image = saveImage(bitmap, imageSize)
-                motorcycle.listImage = saveImage(bitmap, listImageSize)
+    fun addMotorcycle(motorcycle: Motorcycle, photo: Uri?) = viewModelScope.async(Dispatchers.IO) {
+        try {
+            DataAccess.write {
+                photos.commit(photo) { pair ->
+                    val updated = pair?.let { motorcycle.copy(image = it.first, listImage = it.second) } ?: motorcycle
+                    repository.addMotorcycle(updated)
+                }
             }
-            repository.addMotorcycle(motorcycle)
+            Result.success(Unit)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: Exception) {
+            Result.failure(failure)
         }
     }
 
     fun updateMotorcycle(
         motorcycle: Motorcycle,
-        bitmap: Bitmap?,
+        photo: Uri?,
         removeImageOnNull: Boolean = false,
         distanceLogsToDelete: List<DistanceLog> = emptyList()
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if(bitmap != null){
-                deleteImages(motorcycle)
-                motorcycle.image = saveImage(bitmap, imageSize)
-                motorcycle.listImage = saveImage(bitmap, listImageSize)
+    ) = viewModelScope.async(Dispatchers.IO) {
+        try {
+            DataAccess.write {
+                photos.commit(photo) { pair ->
+                    val updated = when {
+                        pair != null -> motorcycle.copy(image = pair.first, listImage = pair.second)
+                        removeImageOnNull -> motorcycle.copy(image = null, listImage = null)
+                        else -> motorcycle
+                    }
+                    repository.updateMotorcycle(updated, distanceLogsToDelete)
+                }
+                if (photo != null || removeImageOnNull) photos.deleteUnreferenced(motorcycle.image, motorcycle.listImage)
             }
-            else if(removeImageOnNull) {
-                deleteImages(motorcycle)
-                motorcycle.image = null
-                motorcycle.listImage = null
-            }
-
-            repository.updateMotorcycle(motorcycle, distanceLogsToDelete)
+            Result.success(Unit)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: Exception) {
+            Result.failure(failure)
         }
     }
 
-    fun deleteMotorcycle(motorcycle: Motorcycle) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteMotorcycle(motorcycle)
-            deleteImages(motorcycle)
+    fun deleteMotorcycle(motorcycle: Motorcycle) = viewModelScope.async(Dispatchers.IO) {
+        try {
+            DataAccess.write {
+                withContext(NonCancellable) {
+                    repository.deleteMotorcycle(motorcycle)
+                    photos.deleteUnreferenced(motorcycle.image, motorcycle.listImage)
+                }
+            }
+            Result.success(Unit)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: Exception) {
+            Result.failure(failure)
         }
     }
 
@@ -78,58 +94,91 @@ class MotorcycleViewModel(application: Application) : AndroidViewModel(applicati
     // Distance log operations
     fun getDistanceLogs(bikeId: Int): LiveData<List<DistanceLog>> = repository.getDistanceLogs(bikeId)
 
-    fun saveDistanceLog(log: DistanceLog) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.saveDistanceLog(log)
+    fun saveDistanceLog(log: DistanceLog) = viewModelScope.async(Dispatchers.IO) {
+        try {
+            DataAccess.write {
+                repository.saveDistanceLog(log)
+            }
+            Result.success(Unit)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: Exception) {
+            Result.failure(failure)
         }
     }
 
-    fun deleteDistanceLog(log: DistanceLog) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteDistanceLog(log)
+    fun deleteDistanceLog(log: DistanceLog) = viewModelScope.async(Dispatchers.IO) {
+        try {
+            DataAccess.write {
+                repository.deleteDistanceLog(log)
+            }
+            Result.success(Unit)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: Exception) {
+            Result.failure(failure)
         }
     }
 
     fun getRepairsLogs(bikeId: Int): LiveData<List<RepairsLog>> = repository.getRepairsLogs(bikeId)
 
-    fun saveRepairsLog(log: RepairsLog) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.saveRepairsLog(log)
+    fun saveRepairsLog(log: RepairsLog) = viewModelScope.async(Dispatchers.IO) {
+        try {
+            DataAccess.write {
+                repository.saveRepairsLog(log)
+            }
+            Result.success(Unit)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: Exception) {
+            Result.failure(failure)
         }
     }
 
-    fun deleteRepairsLog(log: RepairsLog) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteRepairsLog(log)
+    fun deleteRepairsLog(log: RepairsLog) = viewModelScope.async(Dispatchers.IO) {
+        try {
+            DataAccess.write {
+                repository.deleteRepairsLog(log)
+            }
+            Result.success(Unit)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: Exception) {
+            Result.failure(failure)
         }
     }
 
     fun getModsLogs(bikeId: Int): LiveData<List<ModsLog>> = repository.getModsLogs(bikeId)
 
-    fun saveModsLog(log: ModsLog) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.saveModsLog(log)
+    fun saveModsLog(log: ModsLog) = viewModelScope.async(Dispatchers.IO) {
+        try {
+            DataAccess.write {
+                repository.saveModsLog(log)
+            }
+            Result.success(Unit)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: Exception) {
+            Result.failure(failure)
         }
     }
 
-    fun deleteModsLog(log: ModsLog) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteModsLog(log)
+    fun deleteModsLog(log: ModsLog) = viewModelScope.async(Dispatchers.IO) {
+        try {
+            DataAccess.write {
+                repository.deleteModsLog(log)
+            }
+            Result.success(Unit)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: Exception) {
+            Result.failure(failure)
         }
     }
 
-    private fun saveImage(bitmap: Bitmap, size: Int): Uri {
-        val filePath = File(imageDirectory, String.format("%s.jpg", UUID.randomUUID().toString()))
-        FileOutputStream(filePath).use { outputStream ->
-            getResizedBitmap(bitmap, size).compress(Bitmap.CompressFormat.JPEG, 85, outputStream)
-        }
-        return filePath.toUri()
-    }
 
-    private fun deleteImages(motorcycle: Motorcycle){
-        deleteImage(motorcycle.image)
-        deleteImage(motorcycle.listImage)
-    }
 
-    var selectedBikeId: Int? = null
+    var selectedBikeId: Int?
+        get() = savedState["bikeId"]
+        set(value) { savedState["bikeId"] = value }
 }

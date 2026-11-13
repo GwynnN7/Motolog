@@ -1,6 +1,8 @@
 package com.gwynn7.motolog.Fragments.Garage
 
 import android.os.Bundle
+import java.util.Locale
+import com.gwynn7.motolog.saveChanges
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -8,27 +10,28 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.navigation.navGraphViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.gwynn7.motolog.Models.Motorcycle
+import com.gwynn7.motolog.MainActivity
+import com.gwynn7.motolog.photos.PhotoLoader
 import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
-import com.gwynn7.motolog.capitalize
 import com.gwynn7.motolog.databinding.BikeHomeBinding
 import com.gwynn7.motolog.formatThousand
 import com.gwynn7.motolog.showToast
 import com.gwynn7.motolog.stop
-import java.io.File
 
 class BikeHomeFragment : Fragment(), MenuProvider {
     private var _binding: BikeHomeBinding? = null
     private val binding get() = _binding!!
-    private val mMotorcycleViewModel: MotorcycleViewModel by activityViewModels()
+    private val mMotorcycleViewModel: MotorcycleViewModel by navGraphViewModels(R.id.bike_nav)
     private lateinit var currentBike: Motorcycle
 
     override fun onCreateView(
@@ -50,6 +53,9 @@ class BikeHomeFragment : Fragment(), MenuProvider {
             findNavController().navigate(R.id.bikehome_to_bikerepairs)
         }
 
+        binding.editBike.setOnClickListener { editBike() }
+        binding.rideBike.setOnClickListener { (requireActivity() as MainActivity).openRecorder() }
+
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         return binding.root
@@ -68,40 +74,21 @@ class BikeHomeFragment : Fragment(), MenuProvider {
             if (bike != null) {
                 currentBike = bike
 
-                if (currentBike.image?.path?.let(::File)?.exists() == false) {
-                    mMotorcycleViewModel.updateMotorcycle(currentBike, null, true)
-                }
-
                 binding.bikeAlias.text = currentBike.alias.ifEmpty { currentBike.model }
-                binding.bikeAlias.isSelected = true
 
-                binding.bikeManufacturer.text = currentBike.manufacturer
-                binding.bikeModel.text = currentBike.model
-                binding.bikeYear.text = String.format("%d", currentBike.year)
+                binding.bikeDetails.text = listOfNotNull(
+                    currentBike.manufacturer.takeIf { it.isNotBlank() },
+                    currentBike.model.takeIf { currentBike.alias.isNotBlank() && it.isNotBlank() },
+                    String.format(Locale.getDefault(), "%d", currentBike.year)
+                ).joinToString(" · ")
 
-                binding.bikePersonaldistance.text = formatThousand(currentBike.personal_km)
-                binding.bikeTotaldistance.text = formatThousand(currentBike.personal_km + currentBike.start_km)
+                binding.bikePersonaldistance.text = "${formatThousand(currentBike.personal_km)} ${UnitHelper.getDistance()}"
+                binding.bikeTotaldistance.text = "${formatThousand(currentBike.personal_km + currentBike.start_km)} ${UnitHelper.getDistance()}"
 
-                binding.totalBikeDistance.text = capitalize(getString(R.string.total_bike_distance, UnitHelper.getDistanceText(requireContext())))
-                binding.personalBikeDistance.text = capitalize(getString(R.string.personal_bike_distance, UnitHelper.getDistanceText(requireContext())))
 
-                if (currentBike.image != null) {
-                    binding.bikeImage.setImageURI(currentBike.image)
-                    binding.cvBikeImage.radius = 115 * resources.displayMetrics.density
-                    binding.cvBikeImage.scaleX = 1F
-                    binding.cvBikeImage.scaleY = 1F
-                    binding.bikeImage.scaleX = 1F
-                    binding.bikeImage.scaleY = 1F
-                    binding.bikeImage.setPadding(0, 0, 0, 0)
-                } else {
-                    binding.bikeImage.setImageResource(R.drawable.bike_home)
-                    binding.cvBikeImage.radius = 0F
-                    binding.cvBikeImage.scaleX = 1.3F
-                    binding.cvBikeImage.scaleY = 1.3F
-                    binding.bikeImage.scaleX = 1.1F
-                    binding.bikeImage.scaleY = 1.1F
-                    binding.bikeImage.setPadding(0, 60, 0, 0)
-                }
+                binding.bikeImage.maxHeight = ((if (currentBike.image == null) 220 else 420) * resources.displayMetrics.density).toInt()
+                binding.bikeImage.scaleType = ImageView.ScaleType.FIT_CENTER
+                PhotoLoader.load(binding.bikeImage, currentBike.image, R.drawable.bike_home)
 
                 binding.bikeHome.visibility = VISIBLE
             } else stop(activity)
@@ -116,8 +103,7 @@ class BikeHomeFragment : Fragment(), MenuProvider {
         if (!::currentBike.isInitialized) return false
         when (menuItem.itemId) {
             R.id.edit_show_menu -> {
-                val action = BikeHomeFragmentDirections.bikehomeToBikeedit(currentBike)
-                findNavController().navigate(action)
+                editBike()
             }
             R.id.delete_show_menu -> deleteMotorcycle()
             else -> return false
@@ -130,12 +116,17 @@ class BikeHomeFragment : Fragment(), MenuProvider {
         _binding = null
     }
 
+    private fun editBike() {
+        if (::currentBike.isInitialized) findNavController().navigate(BikeHomeFragmentDirections.bikehomeToBikeedit(currentBike))
+    }
+
     private fun deleteMotorcycle() {
         MaterialAlertDialogBuilder(requireContext())
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                mMotorcycleViewModel.deleteMotorcycle(currentBike)
-                showToast(requireContext(), getString(R.string.bike_delete))
-                stop(activity)
+                saveChanges(mMotorcycleViewModel.deleteMotorcycle(currentBike)) {
+                    showToast(requireContext(), getString(R.string.bike_delete))
+                    stop(activity)
+                }
             }
             .setNegativeButton(getString(R.string.no), null)
             .setTitle("${getString(R.string.delete)} ${currentBike.manufacturer} ${currentBike.model}?")

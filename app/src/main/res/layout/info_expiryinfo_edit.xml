@@ -1,130 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.gwynn7.motolog.Fragments.Info.EditExpiryFragment">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="20dp">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cw_expiry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:cardBackgroundColor="@color/dark_gray"
-            app:cardCornerRadius="25dp"
-            app:cardElevation="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/tw_tax"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="italic|bold"
-                    android:text="@string/bike_tax"
-                    android:textAlignment="center"
-                    android:textSize="20dp"
-                    android:layout_marginTop="15dp"
-                    android:textColor="@color/white"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <DatePicker
-                    android:id="@+id/dp_tax"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:datePickerMode="spinner"
-                    android:calendarViewShown="false"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-
-                    app:layout_constraintTop_toBottomOf="@+id/tw_tax" />
-
-                <View
-                    android:id="@+id/separator_0"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="35dp"
-                    app:layout_constraintTop_toBottomOf="@id/dp_tax"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:background="@color/dark_white"/>
-
-                <TextView
-                    android:id="@+id/tw_insurance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="italic|bold"
-                    android:text="@string/bike_insurance"
-                    android:textAlignment="center"
-                    android:layout_marginTop="20dp"
-                    android:textSize="20dp"
-                    android:textColor="@color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/separator_0"
-                    />
-
-                <DatePicker
-                    android:id="@+id/dp_insurance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:datePickerMode="spinner"
-                    android:calendarViewShown="false"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tw_insurance" />
-
-                <View
-                    android:id="@+id/separator_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="35dp"
-                    app:layout_constraintTop_toBottomOf="@id/dp_insurance"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:background="@color/dark_white"/>
-
-                <TextView
-                    android:id="@+id/tw_inspection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="italic|bold"
-                    android:text="@string/bike_inspection"
-                    android:textAlignment="center"
-                    android:textSize="20dp"
-                    android:textColor="@color/white"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/separator_1"
-                    />
-
-                <DatePicker
-                    android:id="@+id/dp_inspection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:datePickerMode="spinner"
-                    android:calendarViewShown="false"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tw_inspection"/>
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp" android:paddingBottom="32dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceHeadlineSmall" android:text="@string/profile_deadlines"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceBodyMedium" android:text="@string/profile_deadline_help" android:layout_marginTop="8dp"/>
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard" app:cardBackgroundColor="@color/dark_gray" app:cardCornerRadius="20dp" app:cardElevation="2dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceTitleLarge" android:text="@string/bike_insurance"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/insurance_date" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/profile_choose_date" android:layout_marginTop="12dp"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/clear_insurance" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/profile_clear_date"/>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard" app:cardBackgroundColor="@color/dark_gray" app:cardCornerRadius="20dp" app:cardElevation="2dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceTitleLarge" android:text="@string/bike_tax"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/tax_date" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/profile_choose_date" android:layout_marginTop="12dp"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/clear_tax" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/profile_clear_date"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard" app:cardBackgroundColor="@color/dark_gray" app:cardCornerRadius="20dp" app:cardElevation="2dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceTitleLarge" android:text="@string/bike_inspection"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/inspection_date" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/profile_choose_date" android:layout_marginTop="12dp"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/clear_inspection" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/profile_clear_date"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <com.google.android.material.button.MaterialButton android:id="@+id/save_profile" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/save" android:layout_marginTop="24dp"/>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

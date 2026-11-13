@@ -20,6 +20,14 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# Keep model classes referenced by Navigation XML graphs and Room
+-keep class com.gwynn7.motolog.Models.** { *; }
+
+# Keep Parcelable CREATOR fields for kotlinx.parcelize
+-keepclassmembers class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
+
 # Fix for Missing class com.google.j2objc.annotations.RetainedWith
 -dontwarn com.google.j2objc.annotations.RetainedWith
 -dontwarn javax.annotation.Nullable

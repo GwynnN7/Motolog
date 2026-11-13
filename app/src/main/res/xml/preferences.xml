@@ -47,4 +47,11 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/ride_tracking_settings" app:iconSpaceReserved="false">
+        <ListPreference android:key="tracking_interval_ms" android:title="@string/ride_interval"
+            android:entries="@array/ride_intervals" android:entryValues="@array/ride_interval_values"
+            android:defaultValue="2000" app:useSimpleSummaryProvider="true" app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat android:key="tracking_lean" android:title="@string/ride_lean_setting"
+            android:summary="@string/ride_lean_setting_summary" android:defaultValue="true" app:iconSpaceReserved="false" />
+    </PreferenceCategory>
 </PreferenceScreen>

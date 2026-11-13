@@ -41,7 +41,7 @@ object LocaleHelper {
         val locale = Locale(language)
         Locale.setDefault(locale)
 
-        val configuration = context.resources.configuration
+        val configuration = android.content.res.Configuration(context.resources.configuration)
         configuration.setLocale(locale)
         configuration.setLayoutDirection(locale)
 

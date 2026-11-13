@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="photo_crop">Crop photo</string>
+    <string name="photo_rotate">Rotate</string>
+    <string name="photo_done">Use photo</string>
+    <item name="photo_load_job" type="id" />
+    <item name="photo_load_attach" type="id" />
+    <string name="photo_edit">Edit photo</string>
+    <string name="photo_choose">Choose and crop photo</string>
+    <string name="photo_remove">Remove photo</string>
+    <string name="photo_failed">Could not open this photo. Please choose it again.</string>
+    <string name="ride_gps_unavailable">This device has no GPS provider. Ride recording is unavailable.</string>
+</resources>

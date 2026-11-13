@@ -2,26 +2,43 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+    <uses-feature android:name="android.hardware.location" android:required="false" />
+    <uses-feature android:name="android.hardware.location.network" android:required="false" />
+
     <application
+        android:name=".MotoLogApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/app_icon"
-        android:label="@string/app_name"
+        android:label="${APP_LABEL}"
         android:roundIcon="@mipmap/app_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MotoLog"
         android:hardwareAccelerated="true"
+        android:usesCleartextTraffic="false"
         tools:targetApi="35">
 
-        <activity
-            android:name="com.gwynn7.motolog.BikeActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" />
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="${MAPS_API_KEY}" />
+        <activity android:name=".photos.PhotoCropActivity" android:exported="false" />
+        <!-- The library's legacy activity is exported by default; MotoLog uses its own screen. -->
+        <activity android:name="com.canhub.cropper.CropImageActivity" tools:node="remove" />
+        <provider android:name="com.canhub.cropper.CropFileProvider"
+            android:authorities="${applicationId}.cropper.fileprovider" tools:node="remove" />
+        <service android:name=".rides.tracking.RideRecorderService"
+            android:exported="false" android:foregroundServiceType="location" />
         <activity
             android:name="com.gwynn7.motolog.MainActivity"
             android:windowSoftInputMode="adjustResize"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,84 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingHorizontal="10dp"
-    android:paddingTop="8dp"
-    android:id="@+id/distancelog_row">
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cv_distance_row"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="25dp"
-        app:cardElevation="10dp"
-        android:clickable="true"
-        app:cardBackgroundColor="@color/dark_gray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
-
-            <ImageView
-                android:id="@+id/gear_image"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:contentDescription="@string/distance_log"
-                android:padding="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_distance" />
-
-            <TextView
-                android:id="@+id/tw_distance_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="4dp"
-                android:textAllCaps="true"
-                android:textSize="18dp"
-                app:layout_constraintBaseline_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/gear_image"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tw_distance_log"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="4dp"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:textColor="@color/white"
-                android:textSize="30dp"
-                android:textStyle="bold|italic"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tw_distance_difference"
-                app:layout_constraintStart_toEndOf="@+id/gear_image" />
-
-            <TextView
-                android:id="@+id/tw_distance_difference"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:textColor="@color/green"
-                android:textSize="20dp"
-                android:textStyle="bold|italic"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:paddingHorizontal="12dp" android:paddingTop="12dp">
+    <androidx.cardview.widget.CardView android:id="@+id/cv_distance_row"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard" app:cardBackgroundColor="@color/dark_gray"
+        app:cardCornerRadius="20dp" app:cardElevation="2dp" android:clickable="true"
+        android:focusable="true" android:foreground="?attr/selectableItemBackground">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:padding="12dp" android:orientation="horizontal">
+            <ImageView android:layout_width="44dp" android:layout_height="44dp" android:padding="8dp"
+                android:importantForAccessibility="no" android:src="@drawable/ic_distance" app:tint="#7DD9C6" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:orientation="vertical" android:paddingHorizontal="8dp" android:paddingVertical="4dp">
+                <TextView android:id="@+id/tw_distance_log" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                <TextView android:id="@+id/tw_distance_date" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/less_dark_white" android:layout_marginTop="8dp" />
+                <TextView android:id="@+id/tw_distance_difference" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="#7DD9C6" android:layout_marginTop="4dp" />
+            </LinearLayout>
+            <ImageButton android:id="@+id/edit_log" android:layout_width="48dp" android:layout_height="48dp"
+                android:src="@drawable/ic_edit" app:tint="@color/white"
+                android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/edit_log" />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

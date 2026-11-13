@@ -1,12 +1,14 @@
 package com.gwynn7.motolog.Fragments.Gear
 
 import android.os.Bundle
+import java.util.Locale
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -31,10 +33,13 @@ class GearListFragment : Fragment(), MenuProvider {
     ): View {
         _binding = GearListBinding.inflate(inflater, container, false)
 
-        binding.fabAddGear.setOnClickListener {
+        val addProfile = View.OnClickListener {
             val action = GearListFragmentDirections.gearlistToGearadd(null)
             findNavController().navigate(action)
         }
+
+        binding.fabAddGear.setOnClickListener(addProfile)
+        binding.addFirstProfile.setOnClickListener(addProfile)
 
         return binding.root
     }
@@ -46,7 +51,10 @@ class GearListFragment : Fragment(), MenuProvider {
         binding.rwGears.layoutManager = LinearLayoutManager(requireContext())
 
         mGearViewModel.readAllData.observe(viewLifecycleOwner) { gears ->
-            binding.placeholder.visibility = if (gears.isEmpty()) View.VISIBLE else View.GONE
+            val empty = gears.isEmpty()
+            binding.emptyState.isVisible = empty
+            binding.fabAddGear.isVisible = !empty
+            binding.rwGears.isVisible = !empty
             adapter.submitList(gears.sortedBy { gear -> gear.date }.reversed())
         }
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
@@ -62,7 +70,7 @@ class GearListFragment : Fragment(), MenuProvider {
 
             val totalMoney = mGearViewModel.readAllData.value.orEmpty().sumOf { it.price }
 
-            dialogBinding.cost.text = String.format("%.2f%s", totalMoney, UnitHelper.getCurrency())
+            dialogBinding.cost.text = String.format(Locale.getDefault(), "%.2f%s", totalMoney, UnitHelper.getCurrency())
 
             MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogBinding.root)
@@ -73,6 +81,7 @@ class GearListFragment : Fragment(), MenuProvider {
     }
 
     override fun onDestroyView() {
+        binding.rwGears.adapter = null
         super.onDestroyView()
         _binding = null
     }

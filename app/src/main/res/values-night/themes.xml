@@ -1,5 +1,8 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.MotoLog" parent="Theme.Material3.DayNight">
+<resources>
+    <style name="Base.Theme.MotoLog" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#7DD9C6</item>
+        <item name="colorOnPrimary">#00382F</item>
+        <item name="colorPrimaryContainer">#263D36</item>
         <item name="colorOnBackground">@color/white</item>
     </style>
 </resources>

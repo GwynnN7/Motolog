@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="log_distance_change">+%1$s %2$s in %3$s</string>
+    <string name="ride_map_not_configured">Le mappe stradali non sono abilitate in questa versione. Percorso offline: trascina per spostarlo, pizzica per ingrandire.</string>
+    <string name="ride_map_no_services">Google Play Services non è disponibile. Percorso offline: trascina per spostarlo, pizzica per ingrandire.</string>
+    <string name="ride_map_loading">Caricamento della mappa stradale…</string>
+    <string name="ride_map_loading_failed">La mappa stradale non è stata caricata. Controlla la connessione e la configurazione della chiave Google Maps. La registrazione continua a funzionare.</string>
+    <string name="ride_offline_map_hint">Percorso offline. Trascina per spostarlo, pizzica o tocca due volte per ingrandire. Adatta percorso ripristina la vista.</string>
+    <string name="ride_follow">Segui la moto</string>
+    <string name="ride_prepare">Prepara il giro</string>
+    <string name="ride_preparing">Preparazione GPS</string>
+    <string name="ride_gps_searching">In attesa di una posizione GPS precisa e recente. Vai all’aperto per migliorare il segnale.</string>
+    <string name="ride_gps_ready">GPS pronto. Avvia la registrazione o calibra il telefono fissato al supporto per stimare la piega.</string>
+    <string name="ride_gps_accuracy">Precisione GPS: ±%1$d m</string>
+    <string name="ride_calibrate_start">Calibra e avvia</string>
+    <string name="ride_skip_calibration">Avvia senza calibrare la piega</string>
+    <string name="ride_calibration_upright">Mantieni la moto verticale e il telefono fisso · %1$d s</string>
+    <string name="ride_calibration_forward">Quando è sicuro, avanza dolcemente in linea retta · %1$d s</string>
+    <string name="ride_preparation_help">La preparazione non aggiunge distanza e non crea un giro salvato. La calibrazione della piega è facoltativa: il GPS funziona anche senza.</string>
+    <string name="log_category">Categoria</string>
+    <string name="log_title">Titolo</string>
+    <string name="log_notes_optional">Note (facoltative)</string>
+    <string name="log_odometer">Contachilometri</string>
+    <string name="log_cost">Costo (lascia vuoto per 0)</string>
+    <string name="log_save">Salva voce</string>
+    <string name="log_date_value">Data: %1$s</string>
+    <string name="log_title_required">Inserisci un titolo</string>
+    <string name="log_invalid_cost">Inserisci un costo valido e non negativo</string>
+    <string name="log_no_matching_entries">Nessuna voce in questa categoria. Scegli Tutti nel filtro per vedere le altre voci.</string>
+</resources>

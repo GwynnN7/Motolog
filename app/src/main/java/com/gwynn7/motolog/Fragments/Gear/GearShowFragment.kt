@@ -1,6 +1,7 @@
 package com.gwynn7.motolog.Fragments.Gear
 
 import android.os.Bundle
+import com.gwynn7.motolog.saveChanges
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,12 +17,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.gwynn7.motolog.Models.Gear
+import com.gwynn7.motolog.photos.PhotoLoader
 import com.gwynn7.motolog.R
-import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.ViewModel.GearViewModel
 import com.gwynn7.motolog.databinding.GearShowBinding
 import com.gwynn7.motolog.longToDateString
-import java.io.File
+import com.gwynn7.motolog.ui.calendarDaysBetween
+import com.gwynn7.motolog.ui.formatLogInterval
+import com.gwynn7.motolog.ui.formatMoney
+import androidx.core.view.isVisible
 
 class GearShowFragment : Fragment(), MenuProvider {
     private var _binding: GearShowBinding? = null
@@ -36,6 +40,8 @@ class GearShowFragment : Fragment(), MenuProvider {
     ): View {
         _binding = GearShowBinding.inflate(inflater, container, false)
 
+        binding.editGear.setOnClickListener { editGear() }
+
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         return binding.root
@@ -48,17 +54,16 @@ class GearShowFragment : Fragment(), MenuProvider {
             if (gear != null) {
                 currentGear = gear
 
-                if (currentGear.image?.path?.let(::File)?.exists() == false) {
-                    mGearViewModel.updateGear(currentGear, null, true)
-                }
-
                 binding.twGearModel.text = currentGear.model
                 binding.twGearManufacturer.text = currentGear.manufacturer
-                binding.twGearPrice.text = String.format("%.2f%s", currentGear.price, UnitHelper.getCurrency())
+                binding.twGearPrice.text = formatMoney(currentGear.price)
                 binding.twGearDate.text = longToDateString(currentGear.date)
+                val days = calendarDaysBetween(currentGear.date, System.currentTimeMillis())
+                binding.gearAge.isVisible = days >= 0
+                binding.gearAge.text = if (days == 0L) getString(R.string.profile_purchased_today)
+                    else getString(R.string.profile_owned_for, requireContext().formatLogInterval(days))
 
-                if (currentGear.image != null) binding.ivGearImageShow.setImageURI(currentGear.image)
-                else binding.ivGearImageShow.setImageResource(R.drawable.helmet_show)
+                PhotoLoader.load(binding.ivGearImageShow, currentGear.image, R.drawable.helmet_show)
 
                 binding.gearShowView.visibility = View.VISIBLE
             } else findNavController().navigateUp()
@@ -73,8 +78,7 @@ class GearShowFragment : Fragment(), MenuProvider {
         if (!::currentGear.isInitialized) return false
         when (menuItem.itemId) {
             R.id.edit_show_menu -> {
-                val action = GearShowFragmentDirections.gearshowToGearadd(currentGear)
-                findNavController().navigate(action)
+                editGear()
                 return true
             }
             R.id.delete_show_menu -> {
@@ -90,12 +94,17 @@ class GearShowFragment : Fragment(), MenuProvider {
         _binding = null
     }
 
+    private fun editGear() {
+        if (::currentGear.isInitialized) findNavController().navigate(GearShowFragmentDirections.gearshowToGearadd(currentGear))
+    }
+
     private fun deleteGear() {
         MaterialAlertDialogBuilder(requireContext())
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                mGearViewModel.deleteGear(currentGear)
-                Toast.makeText(requireContext(), getString(R.string.gear_delete), Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.gearshow_to_gearlist)
+                saveChanges(mGearViewModel.deleteGear(currentGear)) {
+                    Toast.makeText(requireContext(), getString(R.string.gear_delete), Toast.LENGTH_SHORT).show()
+                    findNavController().popBackStack(R.id.gear_list, false)
+                }
             }
             .setNegativeButton(getString(R.string.no), null)
             .setTitle("${getString(R.string.delete)} ${args.currentGear.manufacturer} ${args.currentGear.model}?")

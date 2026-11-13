@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="log_distance_change">+%1$s %2$s in %3$s</string>
+    <string name="ride_map_not_configured">Street maps are not enabled in this build. Offline route: drag to pan, pinch to zoom.</string>
+    <string name="ride_map_no_services">Google Play services are unavailable. Offline route: drag to pan, pinch to zoom.</string>
+    <string name="ride_map_loading">Loading street map…</string>
+    <string name="ride_map_loading_failed">Street map has not loaded, check the connection. Ride recording still works.</string>
+    <string name="ride_offline_map_hint">Offline route. Drag to pan, pinch or double tap to zoom. Fit route resets the view.</string>
+    <string name="ride_follow">Follow ride</string>
+    <string name="ride_prepare">Prepare ride</string>
+    <string name="ride_preparing">Preparing GPS</string>
+    <string name="ride_gps_searching">Waiting for an accurate GPS signal.</string>
+    <string name="ride_gps_ready">GPS ready. You can optionally start the calibration process for lean estimates.</string>
+    <string name="ride_gps_accuracy">GPS accuracy: ±%1$d m</string>
+    <string name="ride_calibrate_start">Calibrate</string>
+    <string name="ride_skip_calibration">Start without calibration</string>
+    <string name="ride_calibration_upright">Keep the motorcycle upright and the phone fixed · %1$d s</string>
+    <string name="ride_calibration_forward">Move gently straight ahead · %1$d s</string>
+    <string name="ride_preparation_help">Lean calibration is optional and GPS recording works without it.</string>
+    <string name="log_category">Category</string>
+    <string name="log_title">Title</string>
+    <string name="log_notes_optional">Notes (optional)</string>
+    <string name="log_odometer">Odometer</string>
+    <string name="log_cost">Cost (leave empty for 0)</string>
+    <string name="log_save">Save entry</string>
+    <string name="log_date_value">Date: %1$s</string>
+    <string name="log_title_required">Enter a title</string>
+    <string name="log_invalid_cost">Enter a valid, non-negative cost</string>
+    <string name="log_no_matching_entries">No entries in this category. Choose All in the filter to see the other entries.</string>
+</resources>

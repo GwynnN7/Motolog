@@ -25,4 +25,6 @@ interface GearDAO {
 
     @Query("SELECT * FROM gear WHERE id = :id")
     fun getGear(id: Int): LiveData<Gear?>
+    @Query("SELECT image FROM gear WHERE image IS NOT NULL UNION SELECT listImage FROM gear WHERE listImage IS NOT NULL")
+    suspend fun photoUris(): List<String>
 }

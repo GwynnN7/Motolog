@@ -1,13 +1,16 @@
 package com.gwynn7.motolog.Fragments.RepairsLog
 
 import android.os.Bundle
+import android.app.DatePickerDialog
+import android.widget.ArrayAdapter
+import com.gwynn7.motolog.longToDateString
+import com.gwynn7.motolog.saveChanges
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -21,11 +24,9 @@ import com.gwynn7.motolog.Path
 import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
-import com.gwynn7.motolog.capitalize
 import com.gwynn7.motolog.databinding.RepairslogAddBinding
 import com.gwynn7.motolog.dateFromLong
 import com.gwynn7.motolog.longFromDate
-import com.gwynn7.motolog.repairColors
 import com.gwynn7.motolog.showToast
 import com.gwynn7.motolog.stop
 import java.util.Calendar
@@ -40,14 +41,29 @@ class RepairsLogAddFragment : Fragment(), MenuProvider {
     private var currentBike: Motorcycle? = null
     private var currentLog: RepairsLog? = null
     private var formBound = false
+    private var draft: Bundle? = null
+    private var dateDialog: DatePickerDialog? = null
 
     private val path get() = if (args.logId == NO_LOG_ID) Path.Add else Path.Edit
-    private val repairType get() = args.repairIndex.coerceIn(repairColors.indices)
+    private var repairType = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = RepairslogAddBinding.inflate(inflater, container, false)
+        formBound = false
+        draft = savedInstanceState?.getBundle("draft") ?: draft
+        binding.saveLog.setOnClickListener { insertDataToDatabase() }
+        binding.logDate.setOnClickListener { chooseDate() }
+        binding.costInput.prefixText = UnitHelper.getCurrency() + " "
+        binding.editorHeading.setText(if (path == Path.Edit) R.string.edit_log else R.string.add_log)
+        val categories = resources.getStringArray(R.array.repair_types)
+        binding.category.setAdapter(
+            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, categories)
+        )
+        binding.category.setOnItemClickListener { _, _, position, _ ->
+            repairType = position
+        }
         binding.btDeleteRepair.setOnClickListener { deleteLog() }
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         return binding.root
@@ -86,21 +102,16 @@ class RepairsLogAddFragment : Fragment(), MenuProvider {
         val bike = currentBike ?: return
         val log = if (path == Path.Edit) currentLog ?: return else null
         formBound = true
-        savedDate = log?.date ?: savedDate
-        binding.textViewRepairDistance.text = capitalize(
-            getString(R.string.bike_repair_distance, UnitHelper.getDistanceText(requireContext()))
-        )
-        binding.etRepairDistance.setText((log?.repair_km ?: bike.start_km + bike.personal_km).toString())
-        binding.etRepairType.setText(log?.typeText.orEmpty())
-        binding.etRepairNotes.setText(log?.notes.orEmpty())
-        binding.etRepairPrice.setText(log?.price?.toString().orEmpty())
-        binding.ivRepairImage.setColorFilter(ContextCompat.getColor(requireContext(), repairColors[repairType]))
-        binding.dpRepairDate.maxDate = Date().time
-        binding.dpRepairDate.init(
-            dateFromLong(savedDate, Calendar.YEAR),
-            dateFromLong(savedDate, Calendar.MONTH),
-            dateFromLong(savedDate, Calendar.DAY_OF_MONTH)
-        ) { _, year, month, dayOfMonth -> savedDate = longFromDate(year, month, dayOfMonth) }
+        savedDate = draft?.getLong("date") ?: log?.date ?: savedDate
+        repairType = (draft?.getInt("category") ?: log?.typeIndex ?: args.repairIndex).coerceIn(0, resources.getStringArray(R.array.repair_types).lastIndex)
+        binding.category.setText(resources.getStringArray(R.array.repair_types)[repairType], false)
+        binding.odometerInput.hint = getString(R.string.ride_odometer, UnitHelper.getDistance())
+        binding.etRepairDistance.setText(draft?.getString("distance") ?: ((log?.repair_km
+            ?: (bike.start_km + bike.personal_km))).toString())
+        binding.etRepairType.setText(draft?.getString("title") ?: log?.typeText.orEmpty())
+        binding.etRepairNotes.setText(draft?.getString("notes") ?: log?.notes.orEmpty())
+        binding.etRepairPrice.setText(draft?.getString("price") ?: log?.price?.toString().orEmpty())
+        binding.logDate.text = getString(R.string.log_date_value, longToDateString(savedDate))
         binding.btDeleteRepair.visibility = if (path == Path.Edit) View.VISIBLE else View.GONE
     }
 
@@ -108,14 +119,12 @@ class RepairsLogAddFragment : Fragment(), MenuProvider {
         val bike = currentBike ?: return
         val type = binding.etRepairType.text.toString().trim()
         val notes = binding.etRepairNotes.text.toString().trim()
-        val price = binding.etRepairPrice.text.toString().trim().toDoubleOrNull()
+        val price = binding.etRepairPrice.text.toString().trim().ifBlank { "0" }.replace(',', '.').toDoubleOrNull()
         val distance = binding.etRepairDistance.text.toString().trim().toIntOrNull()
-        if (type.isEmpty() || notes.isEmpty() || price == null || !price.isFinite() || price < 0 ||
-            distance == null || distance < 0
-        ) {
-            showToast(requireContext(), getString(R.string.fill_fields))
-            return
-        }
+        binding.etRepairType.error = if (type.isEmpty()) getString(R.string.log_title_required) else null
+        binding.etRepairPrice.error = if (price == null || !price.isFinite() || price < 0) getString(R.string.log_invalid_cost) else null
+        binding.etRepairDistance.error = if (distance == null || distance < 0) getString(R.string.ride_invalid_odometer) else null
+        if (type.isEmpty() || price == null || !price.isFinite() || price < 0 || distance == null || distance < 0) return
 
         val alert = MaterialAlertDialogBuilder(requireContext())
             .setPositiveButton(getString(R.string.ok), null)
@@ -131,7 +140,7 @@ class RepairsLogAddFragment : Fragment(), MenuProvider {
             }
         }
 
-        motorcycleViewModel.saveRepairsLog(
+        saveChanges(motorcycleViewModel.saveRepairsLog(
             RepairsLog(
                 id = currentLog?.id ?: 0,
                 motorcycleId = bike.id,
@@ -142,18 +151,20 @@ class RepairsLogAddFragment : Fragment(), MenuProvider {
                 repair_km = distance,
                 price = price
             )
-        )
-        showToast(requireContext(), getString(R.string.log_saved))
-        findNavController().navigateUp()
+        )) {
+            showToast(requireContext(), getString(R.string.log_saved))
+            findNavController().navigateUp()
+        }
     }
 
     private fun deleteLog() {
         val log = currentLog ?: return
         MaterialAlertDialogBuilder(requireContext())
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                motorcycleViewModel.deleteRepairsLog(log)
-                showToast(requireContext(), getString(R.string.log_removed))
-                findNavController().navigateUp()
+                saveChanges(motorcycleViewModel.deleteRepairsLog(log)) {
+                    showToast(requireContext(), getString(R.string.log_removed))
+                    findNavController().popBackStack(R.id.repairs_log, false)
+                }
             }
             .setNegativeButton(getString(R.string.no), null)
             .setTitle(getString(R.string.title_question_remove_log))
@@ -161,7 +172,33 @@ class RepairsLogAddFragment : Fragment(), MenuProvider {
             .show()
     }
 
+    private fun chooseDate() {
+        dateDialog?.dismiss()
+        dateDialog = DatePickerDialog(requireContext(), { _, year, month, day ->
+            savedDate = longFromDate(year, month, day)
+            binding.logDate.text = getString(R.string.log_date_value, longToDateString(savedDate))
+        }, dateFromLong(savedDate, Calendar.YEAR), dateFromLong(savedDate, Calendar.MONTH),
+            dateFromLong(savedDate, Calendar.DAY_OF_MONTH)).apply { datePicker.maxDate = Date().time; show() }
+    }
+
+    private fun captureDraft() = Bundle().apply {
+        putLong("date", savedDate)
+        putString("title", binding.etRepairType.text?.toString())
+        putString("notes", binding.etRepairNotes.text?.toString())
+        putString("price", binding.etRepairPrice.text?.toString())
+        putString("distance", binding.etRepairDistance.text?.toString())
+        putInt("category", repairType)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (formBound && _binding != null) draft = captureDraft()
+        outState.putBundle("draft", draft)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
+        dateDialog?.dismiss(); dateDialog = null
+        if (formBound) draft = captureDraft()
         super.onDestroyView()
         _binding = null
     }

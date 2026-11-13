@@ -1,6 +1,7 @@
 package com.gwynn7.motolog.Database
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -11,6 +12,9 @@ import com.gwynn7.motolog.Models.Motorcycle
 
 @Dao
 interface MotorcycleDAO {
+    @Query("SELECT * FROM motorcycle ORDER BY id DESC")
+    fun observeMotorcycles(): Flow<List<Motorcycle>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addMotorcycle(motorcycle: Motorcycle)
 
@@ -28,4 +32,6 @@ interface MotorcycleDAO {
 
     @Query("SELECT * FROM motorcycle WHERE id = :id")
     suspend fun findMotorcycle(id: Int): Motorcycle?
+    @Query("SELECT image FROM motorcycle WHERE image IS NOT NULL UNION SELECT listImage FROM motorcycle WHERE listImage IS NOT NULL")
+    suspend fun photoUris(): List<String>
 }

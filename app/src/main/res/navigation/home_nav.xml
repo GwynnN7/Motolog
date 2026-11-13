@@ -15,6 +15,9 @@
             android:name="com.gwynn7.motolog.Fragments.Garage.MotorcycleListFragment"
             android:label="@string/garage"
             tools:layout="@layout/motorcycle_list">
+            <action android:id="@+id/bikelist_to_bikehome" app:destination="@id/bike_nav">
+                <argument android:name="bikeId" app:argType="integer" />
+            </action>
             <action
                 android:id="@+id/bikelist_to_bikeadd"
                 app:destination="@id/motorcycle_add" />
@@ -33,6 +36,7 @@
                 app:argType="com.gwynn7.motolog.Models.Motorcycle"
                 app:nullable="true" />
         </fragment>
+        <include app:graph="@navigation/bike_nav" />
         <action
             android:id="@+id/bikes_to_gear"
             app:destination="@id/gear_nav" />
@@ -98,6 +102,17 @@
                 app:argType="com.gwynn7.motolog.Models.Gear" />
         </fragment>
     </navigation>
+    <navigation android:id="@+id/rides_nav" android:label="@string/rides_title" app:startDestination="@id/rides_list">
+        <fragment android:id="@+id/rides_list" android:name="com.gwynn7.motolog.rides.ui.RidesFragment" android:label="@string/rides_title" />
+    </navigation>
+    <fragment android:id="@+id/ride_details" android:name="com.gwynn7.motolog.rides.ui.RideDetailsFragment" android:label="@string/ride_summary">
+        <argument android:name="rideId" app:argType="string" />
+    </fragment>
+    <fragment android:id="@+id/ride_recorder" android:name="com.gwynn7.motolog.rides.ui.RecorderFragment" android:label="@string/ride_start">
+        <argument android:name="bikeId" app:argType="integer" android:defaultValue="-1" />
+    </fragment>
+    <action android:id="@+id/open_ride_recorder" app:destination="@id/ride_recorder" app:launchSingleTop="true" />
+    <action android:id="@+id/open_ride_details" app:destination="@id/ride_details" />
     <navigation
         android:id="@+id/settings_nav"
         android:label="Settings"

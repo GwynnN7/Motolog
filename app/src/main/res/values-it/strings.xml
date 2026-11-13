@@ -2,12 +2,13 @@
 <resources>
     <string-array name="repair_types">
         <item>Manutenzione Motore</item>
-        <item>Manutenzione Catena/Trasmissione</item>
+        <item>Manutenzione Trasmissione</item>
         <item>Manutenzione Gomme</item>
         <item>Manutenzione Freni</item>
         <item>Manutenzione Forcelle</item>
-        <item>Bollo/Revisione/Assicurazione</item>
+        <item>Ricorrente</item>
         <item>Personalizzato</item>
+        <item>Carburante</item>
     </string-array>
     <string-array name="language_entries">
         <item>English</item>
@@ -37,8 +38,7 @@
         <item>£</item>
         <item>¥</item>
     </string-array>
-    <string name="fill_fields">Per favore completa tutti i campi</string>
-    <string name="yes">Si</string>
+<string name="yes">Si</string>
     <string name="no">No</string>
     <string name="add_log">Aggiungi Log</string>
     <string name="edit_log">Modifica Log</string>
@@ -56,10 +56,7 @@
     <string name="motorcycles">Moto</string>
     <string name="gear">Abbigliamento</string>
     <string name="gear_editor">Editor abbigliamento</string>
-    <string name="add_first_bike">Aggiungi ula tua prima moto!</string>
-    <string name="add_first_gear">Aggiungi il tuo primo abbigliamento!</string>
-    <string name="total_distance">Distanza totale</string>
-    <string name="log_nomatch_distance">La distanza di questo log è minore della distanza della moto al momento dell\'acquisto</string>
+<string name="log_nomatch_distance">La distanza di questo log è minore della distanza della moto al momento dell\'acquisto</string>
     <string name="log_nomatch_date">La data di questo log è antecedente alla data di immatricolazione della moto</string>
     <string name="add_motorcycle">Aggiungi Moto</string>
     <string name="edit_motorcycle">Modifica Moto</string>
@@ -79,45 +76,25 @@
     <string name="gear_add">Aggiungi Abbigliamento</string>
     <string name="gear_edit">Modifica Abbigliamento</string>
     <string name="date">Data</string>
-    <string name="bike_future">Moto dal futuro non sono ammesse</string>
-    <string name="bike_past">Le moto non esistevano prima del 1900</string>
-    <string name="log_mismatch">Discordanza tra log di distanza percorsa</string>
+<string name="log_mismatch">Discordanza tra log di distanza percorsa</string>
     <string name="log_mismatch_action">I log avvenuti prima della nuova data e con meno distanza verrano eliminati</string>
     <string name="type">Tipo</string>
-    <string name="notes">Note</string>
-    <string name="maintenance_type">Tipo manutenzione</string>
-    <string name="maintenance_notes">Note sulla manutenzione</string>
-    <string name="manufacturer">Marca</string>
+<string name="manufacturer">Marca</string>
     <string name="model">Modello</string>
-    <string name="optional">Opzionale</string>
-    <string name="alias">Alias</string>
-    <string name="distance_when_bought">%s all\'acquisto</string>
-    <string name="title">Titolo</string>
-    <string name="description">Descrizione</string>
-    <string name="exhaust">Scarico</string>
-    <string name="day_of_purchase">Giorno acquisto</string>
-    <string name="bike_distance_date">%s moto alla data specificata</string>
-    <string name="total_bike_distance">%s totali</string>
-    <string name="personal_bike_distance">%s personali</string>
-    <string name="save">Salva</string>
+<string name="day_of_purchase">Giorno acquisto</string>
+<string name="save">Salva</string>
     <string name="edit">Modifica</string>
-    <string name="bike_repair_distance">%s manutenzione</string>
-    <string name="done_at">Eseguita a:</string>
-    <string name="bike_add">Moto salvata, premici per personalizzarla!</string>
-    <string name="cylinders">Cilindri</string>
+<string name="cylinders">Cilindri</string>
     <string name="horse_power">Potenza (CV)</string>
     <string name="engine_cc">Cilindrata (CC)</string>
     <string name="engine_torque">Coppia (NM)</string>
-    <string name="engine">Motore</string>
-    <string name="expiry">Scadenze</string>
-    <string name="license_plate">Targa</string>
+<string name="license_plate">Targa</string>
     <string name="front_tire">Gomma ant.</string>
     <string name="rear_tire">Gomma pos.</string>
     <string name="bike_tax">Bollo moto</string>
     <string name="bike_insurance">Assicurazione</string>
     <string name="bike_inspection">Revisione</string>
-    <string name="info_title">Info</string>
-    <string name="edit_engine">Modifica motore</string>
+<string name="edit_engine">Modifica motore</string>
     <string name="edit_info">Modifica info</string>
     <string name="edit_expiry">Modifica scadenze</string>
     <string name="info_saved">Info salvata!</string>
@@ -125,45 +102,35 @@
     <string name="delete_gear">Elimina abbigliamento</string>
     <string name="delete_bike">Elimina moto</string>
     <string name="more">More</string>
-    <string name="not_updated">Non aggiornata</string>
-    <string name="not_set">Non impostata</string>
+<string name="not_set">Non impostata</string>
     <string name="language">Lingua</string>
     <string name="kilometers">Chilometri (km)</string>
     <string name="miles">Miglia (mi)</string>
     <string name="miles_undercase">miglia</string>
     <string name="currency">Valuta</string>
-    <string name="gear_added">Abbigliamento salvato, premici per visualizzarlo!</string>
-    <string name="image_saved">Immagine salvata!</string>
-    <string name="import_data">Importa dati</string>
+<string name="import_data">Importa dati</string>
     <string name="export_data">Esporta dati</string>
-    <string name="todo">Non ancora implementato</string>
-    <string name="add_first_mod">Aggiungi la tua prima modifica!</string>
+<string name="add_first_mod">Aggiungi la tua prima modifica!</string>
     <string name="add_first_distancelog">Aggiungi il tuo primo log di distanza!</string>
     <string name="add_first_repair">Aggiungi la tua prima manutenzione!</string>
     <string name="backup_export_complete">Dati di backup esportati!</string>
-    <string name="image_not_included">Le immagini delle tue moto e del tuo abbigliamento non sono include in questo backup per ridurre le dimensioni del file. L\'applicazione si riavvierà per salvare il backup!</string>
-    <string name="ok">OK</string>
-    <string name="choose_export">Selezioni i dati che vuoi esportare!</string>
-    <string name="choose_import">Seleziona i dati che vuoi importare!</string>
+<string name="ok">OK</string>
+<string name="choose_import">Seleziona i dati che vuoi importare!</string>
     <string name="confirm_import">Vuoi importare nuovi dati?</string>
     <string name="overwrite_data">I dati attuali verrano eliminati e sovrascritti, quindi assicurati di selezionare il file corretto!</string>
     <string name="backup_import_error">Importazione backup fallita</string>
     <string name="unknown_backup_import_error">C\'è stato un errore sconosciuto nell\'importazione del tuo backup. Prova di nuovo!</string>
-    <string name="unknown_backup_export_error">C\'è stato un errore sconosciuto nell\'esportazione del tuo backup. Prova di nuovo!</string>
-    <string name="backup_export_error">Esportazione backup fallita</string>
+<string name="backup_export_error">Esportazione backup fallita</string>
     <string name="backup_import_complete">Dati di backup importati!</string>
     <string name="restart_app">L\'applicazione si riavvierà automaticamente per applicare i cambiamenti!</string>
-    <string name="image_saved_text">Tieni premuto sull\'immagine per rimuoverla!</string>
-    <string name="log_nomatch">Incoerenza dei log della distanza!</string>
+<string name="log_nomatch">Incoerenza dei log della distanza!</string>
     <string name="log_nomatch_distancelogs">La distanza di questo log è maggiore di quella di un log successivo o minore di quella di un log precedente</string>
     <string name="repairlog_nomatch">Incoerenza dei log di manutenzione!</string>
     <string name="total_spent_with_bike">Moto inclusa</string>
-    <string name="costs">Costi</string>
-    <string name="gear_cost">Costo abbigliamento</string>
-    <string name="choose_repair_type">Scegli la categoria della manutenzione (per colori e filtro ricerca)</string>
-    <string name="filter">Filtro</string>
+<string name="gear_cost">Costo abbigliamento</string>
+<string name="filter">Filtro</string>
     <string name="from_old">Dal meno recente</string>
-    <string name="from_new">Dal più recente</string>
+    <string name="from_new">Dal più recente</string>
     <string name="filter_type">Filtro Categoria Manutenzione</string>
     <string name="all">Tutti</string>
 </resources>

@@ -1,142 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gwynn7.motolog.Fragments.ModsLog.ModsLogAddFragment">
+    android:fillViewport="true">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp" android:paddingBottom="32dp">
+<TextView android:id="@+id/editor_heading" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceHeadlineSmall" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/iv_mod_image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="20dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/mods_log"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_mods"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/et_mod_title"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:hint="@string/exhaust"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:inputType="textCapSentences"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_mod_image" />
-
-        <TextView
-            android:id="@+id/textView_mod_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:textAlignment="center"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            android:text="@string/title"
-            android:textColor="@color/dark_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_mod_title" />
-
-        <EditText
-            android:id="@+id/et_mod_description"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:hint="Arrow"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:inputType="textCapSentences"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_mod_title" />
-
-        <TextView
-            android:id="@+id/textView_mod_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:textAlignment="center"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            android:text="@string/description"
-            android:textColor="@color/dark_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_mod_description" />
-
-        <EditText
-            android:id="@+id/et_mod_price"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:hint="350"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            android:inputType="numberDecimal"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_mod_description" />
-
-        <TextView
-            android:id="@+id/textView_mod_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:textAlignment="center"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            android:text="@string/price"
-            android:textColor="@color/dark_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_mod_price" />
-
-        <DatePicker
-            android:id="@+id/dp_mod_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:spinnersShown="true"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_mod_price" />
-
-        <Button
-            android:id="@+id/bt_deleteMod"
-            android:layout_width="200dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="30dp"
-            android:text="@string/delete_log"
-            android:textSize="16dp"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/dark_red"
-            app:layout_constraintTop_toBottomOf="@+id/dp_mod_date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+<com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:hint="@string/log_title" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+<com.google.android.material.textfield.TextInputEditText android:id="@+id/et_mod_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textCapSentences" />
+</com.google.android.material.textfield.TextInputLayout><com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:hint="@string/log_notes_optional" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+<com.google.android.material.textfield.TextInputEditText android:id="@+id/et_mod_description" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textCapSentences|textMultiLine" android:minLines="3" android:gravity="top"/>
+</com.google.android.material.textfield.TextInputLayout><com.google.android.material.textfield.TextInputLayout android:id="@+id/cost_input" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:hint="@string/log_cost" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+<com.google.android.material.textfield.TextInputEditText android:id="@+id/et_mod_price" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" />
+</com.google.android.material.textfield.TextInputLayout>
+<com.google.android.material.button.MaterialButton android:id="@+id/log_date" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" android:layout_marginTop="20dp" android:text="@string/date" />
+<com.google.android.material.button.MaterialButton android:id="@+id/save_log" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" android:layout_marginTop="20dp" android:text="@string/log_save" />
+<com.google.android.material.button.MaterialButton android:id="@+id/bt_deleteMod" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/delete_log" android:textColor="?attr/colorError" android:visibility="gone" />
+</LinearLayout></androidx.core.widget.NestedScrollView>

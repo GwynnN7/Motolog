@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent">
+    <com.gwynn7.motolog.rides.ui.RouteMapPanel android:id="@+id/routeMap" android:layout_width="match_parent" android:layout_height="match_parent" />
+    <com.google.android.material.card.MaterialCardView android:id="@+id/dashboard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="12dp" android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard" app:cardBackgroundColor="@color/dark_gray" app:cardCornerRadius="20dp" android:visibility="gone">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+            <TextView android:id="@+id/recordingStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceLabelLarge" android:gravity="center" android:layout_marginBottom="8dp" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:baselineAligned="false">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/ride_speed" android:textAppearance="?attr/textAppearanceLabelMedium" android:gravity="center" />
+                    <TextView android:id="@+id/speed" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="36sp" android:textStyle="bold" android:gravity="center" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/ride_lean" android:textAppearance="?attr/textAppearanceLabelMedium" android:gravity="center" />
+                    <TextView android:id="@+id/lean" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="36sp" android:textStyle="bold" android:gravity="center" />
+                </LinearLayout>
+            </LinearLayout>
+            <TextView android:id="@+id/distance" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceBodyMedium" android:gravity="center" android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <androidx.core.widget.NestedScrollView android:id="@+id/preparation" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:background="?attr/colorSurface">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp" android:paddingBottom="190dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/ride_prepare" android:textAppearance="?attr/textAppearanceHeadlineMedium" />
+            <TextView android:id="@+id/status" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginVertical="20dp" android:text="@string/ride_intro" android:textAppearance="?attr/textAppearanceBodyLarge" android:accessibilityLiveRegion="polite" />
+            <com.google.android.material.textfield.TextInputLayout android:id="@+id/bikeInput" style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="@string/ride_choose_bike">
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView android:id="@+id/bikeSelector" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <ProgressBar android:id="@+id/gpsProgress" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="24dp" android:indeterminate="true" android:visibility="gone" />
+            <TextView android:id="@+id/gpsAccuracy" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:textAppearance="?attr/textAppearanceTitleMedium" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:text="@string/ride_preparation_help" android:textAppearance="?attr/textAppearanceBodyMedium" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/skipCalibration" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/ride_skip_calibration" android:visibility="gone" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+    <com.google.android.material.card.MaterialCardView android:id="@+id/recorderControls" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:layout_margin="12dp" android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard" app:cardBackgroundColor="@color/dark_gray" app:cardCornerRadius="20dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+            <TextView android:id="@+id/mapNotice" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceBodySmall" android:paddingVertical="8dp" android:visibility="gone" android:accessibilityLiveRegion="polite" />
+            <LinearLayout android:id="@+id/map_actions" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:baselineAligned="false" android:visibility="gone">
+                <com.google.android.material.button.MaterialButton android:id="@+id/fit_map" style="@style/Widget.Material3.Button.TextButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:minHeight="48dp" app:cornerRadius="24dp" android:text="@string/ride_fit_route" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/follow_map" style="@style/Widget.Material3.Button.TextButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:minHeight="48dp" app:cornerRadius="24dp" android:text="@string/ride_follow" />
+            </LinearLayout>
+            <com.google.android.material.button.MaterialButton android:id="@+id/mapMetric" android:layout_width="match_parent" android:layout_height="wrap_content" android:contentDescription="@string/ride_stats" android:visibility="gone" style="@style/Widget.Material3.Button.OutlinedButton" android:minHeight="48dp" app:cornerRadius="24dp" android:text="@string/ride_metric_route" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:baselineAligned="false" android:gravity="center_vertical">
+                <com.google.android.material.button.MaterialButton android:id="@+id/startPause" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:minHeight="56dp" android:text="@string/ride_prepare" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/finish" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginStart="12dp" android:minHeight="56dp" android:text="@string/ride_finish" android:visibility="gone" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:baselineAligned="false" android:gravity="center_vertical">
+                <com.google.android.material.button.MaterialButton android:id="@+id/leaveRecorder" style="@style/Widget.Material3.Button.TextButton" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:minHeight="48dp" android:text="@string/back" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/fuel" style="@style/Widget.Material3.Button.TextButton" android:layout_width="0dp" android:layout_marginStart="12dp" android:layout_height="match_parent" android:minHeight="48dp" android:layout_weight="1" android:text="@string/ride_fuel" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</FrameLayout>

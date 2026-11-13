@@ -7,6 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -32,23 +33,30 @@ class MotorcycleListFragment : Fragment(), MenuProvider {
     ): View {
         _binding = MotorcycleListBinding.inflate(inflater, container, false)
 
-        binding.fabAddMotorcycle.setOnClickListener {
+        val addProfile = View.OnClickListener {
             val action = MotorcycleListFragmentDirections.bikelistToBikeadd(null)
             findNavController().navigate(action)
         }
 
+        binding.fabAddMotorcycle.setOnClickListener(addProfile)
+        binding.addFirstProfile.setOnClickListener(addProfile)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val adapter = MotorcycleListAdapter()
         binding.rwMotorcycles.adapter = adapter
         binding.rwMotorcycles.layoutManager = LinearLayoutManager(requireContext())
-
         mMotorcycleViewModel.readAllData.observe(viewLifecycleOwner) { motorcycles ->
-            binding.placeholder.visibility = if (motorcycles.isEmpty()) View.VISIBLE else View.GONE
+            val empty = motorcycles.isEmpty()
+            binding.emptyState.isVisible = empty
+            binding.fabAddMotorcycle.isVisible = !empty
+            binding.rwMotorcycles.isVisible = !empty
             adapter.submitList(motorcycles.reversed())
         }
-
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
-        return binding.root
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -74,6 +82,7 @@ class MotorcycleListFragment : Fragment(), MenuProvider {
     }
 
     override fun onDestroyView() {
+        binding.rwMotorcycles.adapter = null
         super.onDestroyView()
         _binding = null
     }

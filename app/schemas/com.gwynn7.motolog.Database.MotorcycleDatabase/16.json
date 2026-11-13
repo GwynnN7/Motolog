@@ -1,0 +1,588 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 16,
+    "identityHash": "14354d5a00b12a17907286307388dc7b",
+    "entities": [
+      {
+        "tableName": "motorcycle",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `manufacturer` TEXT NOT NULL, `model` TEXT NOT NULL, `alias` TEXT NOT NULL, `year` INTEGER NOT NULL, `start_km` INTEGER NOT NULL, `personal_km` INTEGER NOT NULL, `image` TEXT, `listImage` TEXT, `cylinders` INTEGER NOT NULL, `engine_cc` REAL NOT NULL, `horse_power` REAL NOT NULL, `torque` REAL NOT NULL, `price` REAL NOT NULL, `front_tire` TEXT NOT NULL, `rear_tire` TEXT NOT NULL, `plate_number` TEXT NOT NULL, `insurance` INTEGER NOT NULL, `tax` INTEGER NOT NULL, `inspection` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manufacturer",
+            "columnName": "manufacturer",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alias",
+            "columnName": "alias",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start_km",
+            "columnName": "start_km",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "personal_km",
+            "columnName": "personal_km",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "image",
+            "columnName": "image",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "listImage",
+            "columnName": "listImage",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "info.cylinders",
+            "columnName": "cylinders",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.engine_cc",
+            "columnName": "engine_cc",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.horse_power",
+            "columnName": "horse_power",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.torque",
+            "columnName": "torque",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.front_tire",
+            "columnName": "front_tire",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.rear_tire",
+            "columnName": "rear_tire",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.plate_number",
+            "columnName": "plate_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expiry.insurance",
+            "columnName": "insurance",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expiry.tax",
+            "columnName": "tax",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expiry.inspection",
+            "columnName": "inspection",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "distance_log",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `motorcycleId` INTEGER NOT NULL, `distance` INTEGER NOT NULL, `date` INTEGER NOT NULL, FOREIGN KEY(`motorcycleId`) REFERENCES `motorcycle`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "motorcycleId",
+            "columnName": "motorcycleId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distance",
+            "columnName": "distance",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_distance_log_motorcycleId",
+            "unique": false,
+            "columnNames": [
+              "motorcycleId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_distance_log_motorcycleId` ON `${TABLE_NAME}` (`motorcycleId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "motorcycle",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "motorcycleId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "repairs_log",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `motorcycleId` INTEGER NOT NULL, `typeIndex` INTEGER NOT NULL, `typeText` TEXT NOT NULL, `notes` TEXT NOT NULL, `date` INTEGER NOT NULL, `repair_km` INTEGER NOT NULL, `price` REAL NOT NULL, FOREIGN KEY(`motorcycleId`) REFERENCES `motorcycle`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "motorcycleId",
+            "columnName": "motorcycleId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typeIndex",
+            "columnName": "typeIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typeText",
+            "columnName": "typeText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repair_km",
+            "columnName": "repair_km",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_repairs_log_motorcycleId",
+            "unique": false,
+            "columnNames": [
+              "motorcycleId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_repairs_log_motorcycleId` ON `${TABLE_NAME}` (`motorcycleId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "motorcycle",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "motorcycleId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "mods_log",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `motorcycleId` INTEGER NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `date` INTEGER NOT NULL, `price` REAL NOT NULL, FOREIGN KEY(`motorcycleId`) REFERENCES `motorcycle`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "motorcycleId",
+            "columnName": "motorcycleId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_mods_log_motorcycleId",
+            "unique": false,
+            "columnNames": [
+              "motorcycleId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_mods_log_motorcycleId` ON `${TABLE_NAME}` (`motorcycleId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "motorcycle",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "motorcycleId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "rides",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `motorcycleId` INTEGER, `motorcycleName` TEXT NOT NULL, `startedAt` INTEGER NOT NULL, `endedAt` INTEGER, `durationMillis` INTEGER NOT NULL, `distanceMeters` REAL NOT NULL, `state` TEXT NOT NULL, `activeSlot` INTEGER, `segment` INTEGER NOT NULL, `odometerAtStart` INTEGER NOT NULL, `odometerUnit` TEXT NOT NULL, `mileageDecision` TEXT NOT NULL, `distanceLogId` INTEGER, `confirmedOdometer` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`motorcycleId`) REFERENCES `motorcycle`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "motorcycleId",
+            "columnName": "motorcycleId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "motorcycleName",
+            "columnName": "motorcycleName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startedAt",
+            "columnName": "startedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endedAt",
+            "columnName": "endedAt",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "durationMillis",
+            "columnName": "durationMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distanceMeters",
+            "columnName": "distanceMeters",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "state",
+            "columnName": "state",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "activeSlot",
+            "columnName": "activeSlot",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "segment",
+            "columnName": "segment",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "odometerAtStart",
+            "columnName": "odometerAtStart",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "odometerUnit",
+            "columnName": "odometerUnit",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mileageDecision",
+            "columnName": "mileageDecision",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distanceLogId",
+            "columnName": "distanceLogId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "confirmedOdometer",
+            "columnName": "confirmedOdometer",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_rides_motorcycleId",
+            "unique": false,
+            "columnNames": [
+              "motorcycleId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rides_motorcycleId` ON `${TABLE_NAME}` (`motorcycleId`)"
+          },
+          {
+            "name": "index_rides_activeSlot",
+            "unique": true,
+            "columnNames": [
+              "activeSlot"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_rides_activeSlot` ON `${TABLE_NAME}` (`activeSlot`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "motorcycle",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "motorcycleId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ride_points",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `rideId` TEXT NOT NULL, `recordedAt` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `accuracyMeters` REAL NOT NULL, `altitudeMeters` REAL, `speedMetersPerSecond` REAL NOT NULL, `acceleration` REAL, `leanDegrees` INTEGER, `segment` INTEGER NOT NULL, FOREIGN KEY(`rideId`) REFERENCES `rides`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rideId",
+            "columnName": "rideId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recordedAt",
+            "columnName": "recordedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accuracyMeters",
+            "columnName": "accuracyMeters",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "altitudeMeters",
+            "columnName": "altitudeMeters",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "speedMetersPerSecond",
+            "columnName": "speedMetersPerSecond",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "acceleration",
+            "columnName": "acceleration",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "leanDegrees",
+            "columnName": "leanDegrees",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "segment",
+            "columnName": "segment",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ride_points_rideId",
+            "unique": false,
+            "columnNames": [
+              "rideId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ride_points_rideId` ON `${TABLE_NAME}` (`rideId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "rides",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rideId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14354d5a00b12a17907286307388dc7b')"
+    ]
+  }
+}

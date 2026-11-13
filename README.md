@@ -8,7 +8,8 @@ A diary of your biker's life, to keep track of your journey with your bike âœŒðŸ
 - Save your gear
 - Log everything about your bikes [distance, maintenance, mods and more!]
 - Keep track of the distance you rode and the money you spent
-- Backup your data
+- Record rides linked to your motorcycles, review routes and statistics, and confirm mileage updates
+- Backup your data and photos
 
 ## Links
 
@@ -19,11 +20,11 @@ A diary of your biker's life, to keep track of your journey with your bike âœŒðŸ
 
 #### How can i backup my data?
 
-Use Export in Settings to create a single `.motolog` backup containing your motorcycle and gear data plus locally stored photos. Android's system file picker lets you choose where to save it, including a personal cloud provider. Import accepts this archive and legacy single-database backups.
+Use Export in Settings to create a single `.motolog` backup containing motorcycles, logs, gear, rides, available photos, and settings. Android's file picker lets you choose where to save it, including an existing cloud provider. Import accepts current archives, version 1 archives, and legacy single-database backups. Finish an active ride before importing or exporting.
 
 #### Does the app store any personal data?
 
-No data store and no internet connection required!
+Your garage and recorded rides are stored on your device. Recording and route previews work offline. Optional Google maps need a connection; fuel search opens Google Maps after you tap it. MotoLog has no account or hosted storage backend.
 
 ## Feedback
 
@@ -35,4 +36,8 @@ If you have feedback, reach out to me at mattcheru03@gmail.com or [@motologapp](
 
 ## Logo
 
-![Logo](app/src/main/res/drawable/logo.png)
+![Logo](app/src/main/res/mipmap-xxxhdpi/app_icon.webp)
+
+## Development and release
+
+Debug builds install separately as MotoLog Dev.

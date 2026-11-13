@@ -1,6 +1,10 @@
 package com.gwynn7.motolog.Fragments.ModsLog
 
 import android.os.Bundle
+import com.gwynn7.motolog.UnitHelper
+import android.app.DatePickerDialog
+import com.gwynn7.motolog.longToDateString
+import com.gwynn7.motolog.saveChanges
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -35,6 +39,8 @@ class ModsLogAddFragment : Fragment(), MenuProvider {
     private var currentLog: ModsLog? = null
     private var bikeExists = false
     private var formBound = false
+    private var draft: Bundle? = null
+    private var dateDialog: DatePickerDialog? = null
 
     private val path get() = if (args.logId == NO_LOG_ID) Path.Add else Path.Edit
 
@@ -42,6 +48,12 @@ class ModsLogAddFragment : Fragment(), MenuProvider {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = ModslogAddBinding.inflate(inflater, container, false)
+        formBound = false
+        draft = savedInstanceState?.getBundle("draft") ?: draft
+        binding.saveLog.setOnClickListener { insertDataToDatabase() }
+        binding.logDate.setOnClickListener { chooseDate() }
+        binding.costInput.prefixText = UnitHelper.getCurrency() + " "
+        binding.editorHeading.setText(if (path == Path.Edit) R.string.edit_log else R.string.add_log)
         binding.btDeleteMod.setOnClickListener { deleteLog() }
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         return binding.root
@@ -79,30 +91,23 @@ class ModsLogAddFragment : Fragment(), MenuProvider {
         if (formBound || !bikeExists) return
         val log = if (path == Path.Edit) currentLog ?: return else null
         formBound = true
-        savedDate = log?.date ?: savedDate
-        binding.etModTitle.setText(log?.title.orEmpty())
-        binding.etModTitle.isSelected = true
-        binding.etModDescription.setText(log?.description.orEmpty())
-        binding.etModPrice.setText(log?.price?.toString().orEmpty())
-        binding.dpModDate.maxDate = Date().time
-        binding.dpModDate.init(
-            dateFromLong(savedDate, Calendar.YEAR),
-            dateFromLong(savedDate, Calendar.MONTH),
-            dateFromLong(savedDate, Calendar.DAY_OF_MONTH)
-        ) { _, year, month, dayOfMonth -> savedDate = longFromDate(year, month, dayOfMonth) }
+        savedDate = draft?.getLong("date") ?: log?.date ?: savedDate
+        binding.etModTitle.setText(draft?.getString("title") ?: log?.title.orEmpty())
+        binding.etModDescription.setText(draft?.getString("notes") ?: log?.description.orEmpty())
+        binding.etModPrice.setText(draft?.getString("price") ?: log?.price?.toString().orEmpty())
+        binding.logDate.text = getString(R.string.log_date_value, longToDateString(savedDate))
         binding.btDeleteMod.visibility = if (path == Path.Edit) View.VISIBLE else View.GONE
     }
 
     private fun insertDataToDatabase() {
         val title = binding.etModTitle.text.toString().trim()
         val description = binding.etModDescription.text.toString().trim()
-        val price = binding.etModPrice.text.toString().trim().toDoubleOrNull()
-        if (title.isEmpty() || description.isEmpty() || price == null || price < 0 || !price.isFinite()) {
-            showToast(requireContext(), getString(R.string.fill_fields))
-            return
-        }
+        val price = binding.etModPrice.text.toString().trim().ifBlank { "0" }.replace(',', '.').toDoubleOrNull()
+        binding.etModTitle.error = if (title.isEmpty()) getString(R.string.log_title_required) else null
+        binding.etModPrice.error = if (price == null || !price.isFinite() || price < 0) getString(R.string.log_invalid_cost) else null
+        if (title.isEmpty() || price == null || !price.isFinite() || price < 0) return
 
-        motorcycleViewModel.saveModsLog(
+        saveChanges(motorcycleViewModel.saveModsLog(
             ModsLog(
                 id = currentLog?.id ?: 0,
                 motorcycleId = args.bikeId,
@@ -111,18 +116,20 @@ class ModsLogAddFragment : Fragment(), MenuProvider {
                 date = savedDate,
                 price = price
             )
-        )
-        showToast(requireContext(), getString(R.string.log_saved))
-        findNavController().navigateUp()
+        )) {
+            showToast(requireContext(), getString(R.string.log_saved))
+            findNavController().navigateUp()
+        }
     }
 
     private fun deleteLog() {
         val log = currentLog ?: return
         MaterialAlertDialogBuilder(requireContext())
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                motorcycleViewModel.deleteModsLog(log)
-                showToast(requireContext(), getString(R.string.log_removed))
-                findNavController().navigateUp()
+                saveChanges(motorcycleViewModel.deleteModsLog(log)) {
+                    showToast(requireContext(), getString(R.string.log_removed))
+                    findNavController().popBackStack(R.id.mods_log, false)
+                }
             }
             .setNegativeButton(getString(R.string.no), null)
             .setTitle(getString(R.string.title_question_remove_log))
@@ -130,7 +137,31 @@ class ModsLogAddFragment : Fragment(), MenuProvider {
             .show()
     }
 
+    private fun chooseDate() {
+        dateDialog?.dismiss()
+        dateDialog = DatePickerDialog(requireContext(), { _, year, month, day ->
+            savedDate = longFromDate(year, month, day)
+            binding.logDate.text = getString(R.string.log_date_value, longToDateString(savedDate))
+        }, dateFromLong(savedDate, Calendar.YEAR), dateFromLong(savedDate, Calendar.MONTH),
+            dateFromLong(savedDate, Calendar.DAY_OF_MONTH)).apply { datePicker.maxDate = Date().time; show() }
+    }
+
+    private fun captureDraft() = Bundle().apply {
+        putLong("date", savedDate)
+        putString("title", binding.etModTitle.text?.toString())
+        putString("notes", binding.etModDescription.text?.toString())
+        putString("price", binding.etModPrice.text?.toString())
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (formBound && _binding != null) draft = captureDraft()
+        outState.putBundle("draft", draft)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
+        dateDialog?.dismiss(); dateDialog = null
+        if (formBound) draft = captureDraft()
         super.onDestroyView()
         _binding = null
     }

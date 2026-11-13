@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="photo_crop">Ritaglia foto</string>
+    <string name="photo_rotate">Ruota</string>
+    <string name="photo_done">Usa foto</string>
+    <string name="photo_edit">Modifica foto</string>
+    <string name="photo_choose">Scegli e ritaglia foto</string>
+    <string name="photo_remove">Rimuovi foto</string>
+    <string name="photo_failed">Impossibile aprire questa foto. Selezionala di nuovo.</string>
+    <string name="ride_gps_unavailable">Questo dispositivo non dispone di un ricevitore GPS. La registrazione dei viaggi non è disponibile.</string>
+</resources>
