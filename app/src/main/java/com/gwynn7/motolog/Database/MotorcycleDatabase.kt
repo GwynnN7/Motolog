@@ -12,14 +12,19 @@ import com.gwynn7.motolog.Models.ModsLog
 import com.gwynn7.motolog.Models.Motorcycle
 import com.gwynn7.motolog.Models.RepairsLog
 import org.json.JSONArray
+import com.gwynn7.motolog.rides.data.Ride
+import com.gwynn7.motolog.rides.data.RidePoint
+import com.gwynn7.motolog.rides.data.RideDao
+import com.gwynn7.motolog.rides.data.MIGRATION_15_16
 
 @Database(
-    entities = [Motorcycle::class, DistanceLog::class, RepairsLog::class, ModsLog::class],
-    version = 15,
+    entities = [Motorcycle::class, DistanceLog::class, RepairsLog::class, ModsLog::class, Ride::class, RidePoint::class],
+    version = 16,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class MotorcycleDatabase : RoomDatabase() {
+    abstract fun rideDao(): RideDao
     abstract fun motorcycleDao(): MotorcycleDAO
     abstract fun distanceLogDao(): DistanceLogDAO
     abstract fun repairsLogDao(): RepairsLogDAO
@@ -129,11 +134,11 @@ abstract class MotorcycleDatabase : RoomDatabase() {
             private fun migrateDistanceLogs(db: SupportSQLiteDatabase, bikeId: Int, json: String?) {
                 jsonArrayOrNull(json)?.let { logs ->
                     for (index in 0 until logs.length()) {
-                        val log = logs.optJSONObject(index) ?: continue
-                        if (!log.has("distance") || !log.has("date")) continue
+                        val log = logs.getJSONObject(index)
+                        require(log.has("distance") && log.has("date")) { "Invalid legacy distance entry" }
                         db.execSQL(
                             "INSERT INTO distance_log (motorcycleId, distance, date) VALUES (?, ?, ?)",
-                            arrayOf(bikeId, log.optInt("distance"), log.optLong("date"))
+                            arrayOf<Any>(bikeId, log.getInt("distance"), log.getLong("date"))
                         )
                     }
                 }
@@ -142,20 +147,19 @@ abstract class MotorcycleDatabase : RoomDatabase() {
             private fun migrateRepairsLogs(db: SupportSQLiteDatabase, bikeId: Int, json: String?) {
                 jsonArrayOrNull(json)?.let { logs ->
                     for (index in 0 until logs.length()) {
-                        val log = logs.optJSONObject(index) ?: continue
-                        if (!log.has("typeIndex") || !log.has("typeText") || !log.has("notes") ||
-                            !log.has("date") || !log.has("repair_km") || !log.has("price")
-                        ) continue
+                        val log = logs.getJSONObject(index)
+                        require(log.has("typeIndex") && log.has("typeText") && log.has("notes") &&
+                            log.has("date") && log.has("repair_km") && log.has("price")) { "Invalid legacy maintenance entry" }
                         db.execSQL(
                             "INSERT INTO repairs_log (motorcycleId, typeIndex, typeText, notes, date, repair_km, price) VALUES (?, ?, ?, ?, ?, ?, ?)",
                             arrayOf(
                                 bikeId,
-                                log.optInt("typeIndex"),
-                                log.optString("typeText"),
-                                log.optString("notes"),
-                                log.optLong("date"),
-                                log.optInt("repair_km"),
-                                log.optDouble("price")
+                                log.getInt("typeIndex"),
+                                log.getString("typeText"),
+                                log.getString("notes"),
+                                log.getLong("date"),
+                                log.getInt("repair_km"),
+                                log.getDouble("price")
                             )
                         )
                     }
@@ -165,16 +169,16 @@ abstract class MotorcycleDatabase : RoomDatabase() {
             private fun migrateModsLogs(db: SupportSQLiteDatabase, bikeId: Int, json: String?) {
                 jsonArrayOrNull(json)?.let { logs ->
                     for (index in 0 until logs.length()) {
-                        val log = logs.optJSONObject(index) ?: continue
-                        if (!log.has("title") || !log.has("description") || !log.has("date") || !log.has("price")) continue
+                        val log = logs.getJSONObject(index)
+                        require(log.has("title") && log.has("description") && log.has("date") && log.has("price")) { "Invalid legacy modification entry" }
                         db.execSQL(
                             "INSERT INTO mods_log (motorcycleId, title, description, date, price) VALUES (?, ?, ?, ?, ?)",
                             arrayOf(
                                 bikeId,
-                                log.optString("title"),
-                                log.optString("description"),
-                                log.optLong("date"),
-                                log.optDouble("price")
+                                log.getString("title"),
+                                log.getString("description"),
+                                log.getLong("date"),
+                                log.getDouble("price")
                             )
                         )
                     }
@@ -183,8 +187,8 @@ abstract class MotorcycleDatabase : RoomDatabase() {
 
             private fun jsonArrayOrNull(json: String?): JSONArray? = try {
                 json?.takeIf { it.isNotBlank() && it != "[]" }?.let(::JSONArray)
-            } catch (_: Exception) {
-                null
+            } catch (error: Exception) {
+                throw IllegalStateException("Invalid legacy log data; migration cancelled without deleting it", error)
             }
         }
 
@@ -195,7 +199,7 @@ abstract class MotorcycleDatabase : RoomDatabase() {
                     MotorcycleDatabase::class.java,
                     "motorcycles_db"
                 )
-                    .addMigrations(MIGRATION_14_15)
+                    .addMigrations(MIGRATION_14_15, MIGRATION_15_16)
                     .build()
                     .also { INSTANCE = it }
             }

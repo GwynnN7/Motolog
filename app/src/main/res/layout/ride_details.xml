@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="20dp" android:orientation="vertical">
+        <TextView android:id="@+id/bike" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceHeadlineMedium" android:gravity="center" />
+        <TextView android:id="@+id/date" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceBodyMedium" android:gravity="center" />
+        <TextView android:id="@+id/metrics" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginVertical="16dp" android:textAppearance="?attr/textAppearanceHeadlineSmall" android:gravity="center" />
+        <TextView android:id="@+id/mapNotice" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceBodySmall" android:paddingVertical="8dp" android:visibility="gone" android:accessibilityLiveRegion="polite" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/mapMetric" android:layout_width="match_parent" android:layout_height="wrap_content" android:contentDescription="@string/ride_stats" style="@style/Widget.Material3.Button.OutlinedButton" android:minHeight="48dp" app:cornerRadius="24dp" android:text="@string/ride_metric_route" android:layout_marginBottom="16dp" android:layout_marginTop="4dp" />
+        <com.gwynn7.motolog.rides.ui.RouteMapPanel android:id="@+id/routeMap" android:layout_width="match_parent" android:layout_height="440dp" />
+        <TextView android:id="@+id/statistics" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginVertical="16dp" android:textAppearance="?attr/textAppearanceBodyLarge" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/ride_sensor_note" android:textAppearance="?attr/textAppearanceBodySmall" android:layout_marginBottom="16dp" />
+        <com.google.android.material.card.MaterialCardView android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard" app:cardBackgroundColor="@color/dark_gray" android:layout_width="match_parent" android:layout_height="wrap_content" app:cardCornerRadius="20dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:orientation="vertical">
+                <TextView android:id="@+id/mileageStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceBodyLarge" android:accessibilityLiveRegion="polite" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/confirmMileage" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" android:layout_marginTop="12dp" android:text="@string/ride_confirm_mileage" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/skipMileage" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/ride_keep_only" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.button.MaterialButton android:id="@+id/deleteRide" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:minHeight="48dp" android:text="@string/ride_delete" android:textColor="?attr/colorError" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

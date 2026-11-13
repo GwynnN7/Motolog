@@ -2,12 +2,13 @@
     <string name="app_name" translatable="false">Motolog</string>
     <string-array name="repair_types">
         <item>Engine Service</item>
-        <item>Chain/Transmission Service</item>
+        <item>Transmission Service</item>
         <item>Tire Service</item>
         <item>Brake Service</item>
         <item>Fork Service</item>
-        <item>Tax/Inspection/Insurance</item>
+        <item>Recurrent</item>
         <item>Custom</item>
+        <item>Fuel Service</item>
     </string-array>
     <string-array name="language_entries">
         <item>English</item>
@@ -37,8 +38,7 @@
         <item>£</item>
         <item>¥</item>
     </string-array>
-    <string name="fill_fields">Please fill every field</string>
-    <string name="yes">Yes</string>
+<string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="add_log">Add Log</string>
     <string name="edit_log">Edit Log</string>
@@ -56,10 +56,7 @@
     <string name="motorcycles">Motorcycles</string>
     <string name="gear">Gear</string>
     <string name="gear_editor">Gear Editor</string>
-    <string name="add_first_bike">Add your first motorcycle!</string>
-    <string name="add_first_gear">Add your first gear!</string>
-    <string name="total_distance">Total distance</string>
-    <string name="log_nomatch_distance">This log\'s distance value is lower than the distance this motorcycle had when you bought it</string>
+<string name="log_nomatch_distance">This log\'s distance value is lower than the distance this motorcycle had when you bought it</string>
     <string name="add_motorcycle">Add Motorcycle</string>
     <string name="edit_motorcycle">Edit Motorcycle</string>
     <string name="delete_logs">Delete the logs?</string>
@@ -78,45 +75,25 @@
     <string name="gear_add">Add Gear</string>
     <string name="gear_edit">Edit Gear</string>
     <string name="date">Date</string>
-    <string name="bike_future">Bike from the future not allowed</string>
-    <string name="bike_past">Bikes didn\'t exist before 1900</string>
-    <string name="log_mismatch">Distance logs mismatch found</string>
+<string name="log_mismatch">Distance logs mismatch found</string>
     <string name="log_mismatch_action">Some logs happened before the new date or with less distance will be eliminated</string>
     <string name="type">Type</string>
-    <string name="notes">Notes</string>
-    <string name="maintenance_type">Maintenance type</string>
-    <string name="maintenance_notes">Maintenance notes</string>
-    <string name="manufacturer">Manufacturer</string>
+<string name="manufacturer">Manufacturer</string>
     <string name="model">Model</string>
-    <string name="optional">Optional</string>
-    <string name="alias">Alias</string>
-    <string name="distance_when_bought">%s when bought</string>
-    <string name="title">Title</string>
-    <string name="description">Description</string>
-    <string name="exhaust">Exhaust</string>
-    <string name="day_of_purchase">Day of purchase</string>
-    <string name="bike_distance_date">Bike %s at specified date</string>
-    <string name="total_bike_distance">Total %s</string>
-    <string name="personal_bike_distance">Personal %s</string>
-    <string name="save">Save</string>
+<string name="day_of_purchase">Day of purchase</string>
+<string name="save">Save</string>
     <string name="edit">Edit</string>
-    <string name="bike_repair_distance">Maintenance %s</string>
-    <string name="done_at">Done at:</string>
-    <string name="bike_add">Motorcycle saved, press on it to start customizing!</string>
-    <string name="cylinders">Cylinders</string>
+<string name="cylinders">Cylinders</string>
     <string name="horse_power">Power (HP)</string>
     <string name="engine_cc">Displacement (CC)</string>
     <string name="engine_torque">Torque (NM)</string>
-    <string name="engine">Engine</string>
-    <string name="expiry">Expiry</string>
-    <string name="license_plate">License plate</string>
+<string name="license_plate">License plate</string>
     <string name="front_tire">Front tire</string>
     <string name="rear_tire">Rear tire</string>
     <string name="bike_tax">Bike tax</string>
     <string name="bike_insurance">Insurance</string>
     <string name="bike_inspection">Inspection</string>
-    <string name="info_title">Info</string>
-    <string name="edit_engine">Edit engine</string>
+<string name="edit_engine">Edit engine</string>
     <string name="edit_info">Edit info</string>
     <string name="edit_expiry">Edit expiry</string>
     <string name="info_saved">Info saved!</string>
@@ -124,44 +101,34 @@
     <string name="delete_gear">Delete gear</string>
     <string name="delete_bike">Delete motorcycle</string>
     <string name="more">More</string>
-    <string name="not_updated">Not updated</string>
-    <string name="not_set">Not set</string>
+<string name="not_set">Not set</string>
     <string name="language">Language</string>
     <string name="kilometers">Kilometers (km)</string>
     <string name="miles">Miles (mi)</string>
     <string name="miles_undercase">miles</string>
     <string name="currency">Currency</string>
-    <string name="gear_added">Gear saved, press on it to view!</string>
-    <string name="image_saved">Image saved!</string>
-    <string name="import_data">Import data</string>
+<string name="import_data">Import data</string>
     <string name="export_data">Export data</string>
-    <string name="todo">Not yet implemented</string>
-    <string name="add_first_mod">Add your first modification!</string>
+<string name="add_first_mod">Add your first modification!</string>
     <string name="add_first_distancelog">Add your first distance log!</string>
     <string name="add_first_repair">Add your first maintenance!</string>
     <string name="backup_export_complete">Backup data exported!</string>
-    <string name="image_not_included">Images of your bikes and gear are not included in this backup to limit file size. The application will restart to save the backup!</string>
-    <string name="ok">OK</string>
-    <string name="choose_export">Choose which data to export!</string>
-    <string name="choose_import">Choose which data to import!</string>
+<string name="ok">OK</string>
+<string name="choose_import">Choose which data to import!</string>
     <string name="confirm_import">Are you sure you want to import new data?</string>
     <string name="overwrite_data">Your current data will be deleted and overwritten, so be sure to choose the correct file!</string>
     <string name="backup_import_error">Backup import failed</string>
     <string name="unknown_backup_import_error">There was an unknown error importing your backup. Try again!</string>
-    <string name="unknown_backup_export_error">There was an unknown error exporting your backup. Try again!</string>
-    <string name="backup_export_error">Backup export failed</string>
+<string name="backup_export_error">Backup export failed</string>
     <string name="backup_import_complete">Backup data imported!</string>
     <string name="restart_app">The application will restart automatically to apply changes!</string>
     <string name="log_nomatch">Distance logs inconsistency!</string>
-    <string name="image_saved_text">You can hold on the image to remove it!</string>
-    <string name="log_nomatch_date">This log\'s date happened before motorcycle\'s registration</string>
+<string name="log_nomatch_date">This log\'s date happened before motorcycle\'s registration</string>
     <string name="log_nomatch_distancelogs">This log\'s distance is higher than older log\'s one or lower than newer log\'s one</string>
     <string name="repairlog_nomatch">Maintenance logs inconsistency!</string>
     <string name="total_spent_with_bike">Bike included</string>
-    <string name="costs">Costs</string>
-    <string name="gear_cost">Total gear cost</string>
-    <string name="choose_repair_type">Choose maintenance category (for colors and research filter)</string>
-    <string name="filter">Filter</string>
+<string name="gear_cost">Total gear cost</string>
+<string name="filter">Filter</string>
     <string name="from_old">From least recent</string>
     <string name="from_new">From most recent</string>
     <string name="filter_type">Filter Maintenance Category</string>

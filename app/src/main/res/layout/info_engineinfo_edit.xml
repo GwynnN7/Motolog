@@ -1,195 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gwynn7.motolog.Fragments.Info.EditEngineFragment">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cw_engine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:cardBackgroundColor="@color/dark_gray"
-            app:cardCornerRadius="25dp"
-            app:cardElevation="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/engine_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="24dp"
-                    android:text="@string/engine"
-                    android:textColor="@color/white"
-                    android:textStyle="bold|italic"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:paddingBottom="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/engine_title">
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="10dp"
-                        android:showDividers="middle"
-                        android:divider="@color/white">
-
-                        <EditText
-                            android:id="@+id/et_bike_cylinders"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_weight="1"
-                            android:textStyle="bold"
-                            android:paddingTop="5dp"
-                            android:inputType="number"
-                            android:digits="0123456789"
-                            android:layout_marginHorizontal="50dp"
-                            android:textColor="@color/white"
-                            android:textAlignment="center"
-                            android:textSize="20dp" />
-
-                        <EditText
-                            android:id="@+id/et_bike_hp"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_weight="1"
-                            android:textStyle="bold"
-                            android:paddingTop="5dp"
-                            android:inputType="numberDecimal"
-                            android:layout_marginHorizontal="50dp"
-                            android:textColor="@color/white"
-                            android:textAlignment="center"
-                            android:textSize="20dp" />
-
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="10dp"
-                        android:showDividers="middle"
-                        android:divider="@color/white">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_weight="1"
-                            android:textStyle="italic"
-                            android:text="@string/cylinders"
-
-                            android:textAlignment="center"
-                            android:textSize="14dp" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:textStyle="italic"
-                            android:text="@string/horse_power"
-                            android:textAlignment="center"
-                            android:textSize="14dp" />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="10dp"
-                        android:showDividers="middle"
-                        android:divider="@color/white">
-
-                        <EditText
-                            android:id="@+id/et_bike_cc"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_weight="1"
-                            android:textStyle="bold"
-                            android:paddingTop="15dp"
-                            android:inputType="number"
-                            android:layout_marginHorizontal="50dp"
-                            android:textColor="@color/white"
-                            android:textAlignment="center"
-                            android:textSize="20dp" />
-
-                        <EditText
-                            android:id="@+id/et_bike_torque"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_weight="1"
-                            android:textStyle="bold"
-                            android:paddingTop="15dp"
-                            android:inputType="number"
-                            android:layout_marginHorizontal="50dp"
-                            android:textColor="@color/white"
-                            android:textAlignment="center"
-                            android:textSize="20dp" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="10dp"
-                        android:layout_marginBottom="20dp"
-                        android:showDividers="middle"
-                        android:divider="@color/white">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_weight="1"
-                            android:textStyle="italic"
-                            android:text="@string/engine_cc"
-                            android:paddingBottom="5dp"
-                            android:textAlignment="center"
-                            android:textSize="14dp" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:textStyle="italic"
-                            android:paddingBottom="5dp"
-                            android:text="@string/engine_torque"
-                            android:textAlignment="center"
-                            android:textSize="14dp" />
-
-                    </TableRow>
-                </TableLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+    android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp" android:paddingBottom="32dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceHeadlineSmall" android:text="@string/profile_specs"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceBodyMedium" android:text="@string/profile_optional_specs" android:layout_marginTop="8dp"/>
+        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.Material3.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:hint="@string/engine_cc">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_bike_cc" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.Material3.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:hint="@string/cylinders">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_bike_cylinders" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.Material3.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:hint="@string/horse_power">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_bike_hp" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.Material3.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:hint="@string/engine_torque">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_bike_torque" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton android:id="@+id/save_profile" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/save" android:layout_marginTop="24dp"/>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

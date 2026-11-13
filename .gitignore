@@ -14,6 +14,7 @@ captures/
 .externalNativeBuild/
 .cxx/
 *.apk
+*.aab
 output.json
 
 # IntelliJ
@@ -24,11 +25,17 @@ deploymentTargetDropDown.xml
 render.experimental.xml
 
 # Keystore files
-#*.jks
-#*.keystore
+*.jks
+*.keystore
+keystore.properties
+key.properties
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
 # Android Profiling
 *.hprof
+
+# Local merge working notes (not part of the app)
+/docs/MERGE.md
+/docs/published-2.7-local-changes.patch

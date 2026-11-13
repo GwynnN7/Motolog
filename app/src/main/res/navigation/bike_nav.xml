@@ -6,6 +6,8 @@
     android:label="@string/app_name"
     app:startDestination="@id/bike_home_fragment">
 
+    <argument android:name="bikeId" app:argType="integer" />
+
     <fragment
         android:id="@+id/bike_home_fragment"
         android:name="com.gwynn7.motolog.Fragments.Garage.BikeHomeFragment"

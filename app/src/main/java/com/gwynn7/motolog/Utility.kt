@@ -2,37 +2,22 @@ package com.gwynn7.motolog
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.net.Uri
 import android.widget.Toast
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import androidx.core.graphics.scale
 import kotlinx.coroutines.flow.map
+import com.gwynn7.motolog.settings.settings
 
 enum class Path {
     Add,
     Edit
 }
-
-val repairColors = arrayOf(
-    R.color.red,
-    R.color.orange,
-    R.color.blue,
-    R.color.yellow,
-    R.color.pink,
-    R.color.green,
-    R.color.white
-)
 
 object UnitHelper {
     private val distanceKey = stringPreferencesKey("distance")
@@ -54,7 +39,6 @@ object UnitHelper {
     var currency: Currency = Currency.EUR
 
     fun getDistance() = distance.value
-    fun getDistanceText(context: Context) = if (distance == Distance.MILES) context.getString(R.string.miles_undercase) else distance.value
     fun getCurrency() = currency.value
 
     fun loadData(context: Context, scope: CoroutineScope) {
@@ -67,20 +51,6 @@ object UnitHelper {
                 distance = dist
                 currency = curr
             }
-        }
-    }
-
-    fun saveDistance(context: Context, scope: CoroutineScope, newDistance: Distance) {
-        distance = newDistance
-        scope.launch(Dispatchers.IO) {
-            context.settings.edit { settings -> settings[distanceKey] = newDistance.value }
-        }
-    }
-
-    fun saveCurrency(context: Context, scope: CoroutineScope, newCurrency: Currency) {
-        currency = newCurrency
-        scope.launch(Dispatchers.IO) {
-            context.settings.edit { settings -> settings[currencyKey] = newCurrency.value }
         }
     }
 
@@ -116,31 +86,6 @@ fun formatThousand(number: Int): String {
     return formatter.format(number)
 }
 
-fun capitalize(string: String): String {
-    return string.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-}
-
 fun stop(activity: Activity?) {
-    activity?.finish()
-}
-
-fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap {
-    var width = image.width
-    var height = image.height
-
-    val bitmapRatio = width.toFloat() / height.toFloat()
-    if (bitmapRatio > 1) {
-        width = maxSize
-        height = (width / bitmapRatio).toInt()
-    } else {
-        height = maxSize
-        width = (height * bitmapRatio).toInt()
-    }
-    return image.scale(width, height)
-}
-
-fun deleteImage(image: Uri?) {
-    val path = image?.path ?: return
-    val oldFile = File(path)
-    if (oldFile.exists()) oldFile.delete()
+    if (activity is MainActivity) activity.returnToGarage() else activity?.finish()
 }

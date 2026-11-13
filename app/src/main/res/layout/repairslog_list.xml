@@ -41,7 +41,7 @@
         android:contentDescription="@string/add_log"
         android:focusable="true"
         android:src="@drawable/ic_add"
-        android:tint="@android:color/white"
+        app:tint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

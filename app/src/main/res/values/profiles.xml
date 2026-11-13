@@ -1,0 +1,44 @@
+<resources>
+    <string name="log_distance_initial">+%1$s %2$s since initial odometer</string>
+    <string name="log_distance_same_day">+%1$s %2$s on the same day</string>
+    <string name="interval_separator">", "</string>
+<string name="profile_details">Details</string>
+    <string name="profile_photo_help">Optional photo. Tap to choose, crop or remove.</string>
+    <string name="profile_basics">The essentials</string>
+    <string name="profile_ownership">Ownership</string>
+    <string name="profile_alias">Nickname (optional)</string>
+    <string name="profile_initial_odometer">Odometer when purchased (%1$s)</string>
+    <string name="profile_initial_help">Starting reading, before your distance logs.</string>
+    <string name="profile_personal_distance">Distance with you</string>
+    <string name="profile_odometer">Odometer</string>
+    <string name="profile_odometer_value">Odometer · %1$s %2$s</string>
+<string name="profile_info_help">Deadlines, specifications and spending</string>
+    <string name="profile_deadlines">Deadlines</string>
+    <string name="profile_deadline_help">Keep dates current to see what is due next.</string>
+    <string name="profile_due_today">Due today</string>
+    <string name="profile_due_in">Due in %1$s</string>
+    <string name="profile_overdue">Overdue by %1$s</string>
+    <string name="profile_no_date">No date set</string>
+    <string name="profile_choose_date">Choose date</string>
+    <string name="profile_clear_date">Clear date</string>
+    <string name="profile_clear_named_date">Clear %1$s date</string>
+    <string name="profile_specs">Engine specifications</string>
+<string name="profile_spending">Spending overview</string>
+    <string name="profile_purchase_price">Purchase price</string>
+    <string name="profile_purchase_date">Purchase date: %1$s</string>
+    <string name="profile_owned_for">Owned for %1$s</string>
+    <string name="profile_purchased_today">Purchased today</string>
+    <string name="profile_optional_specs">Optional details. Leave unknown values empty.</string>
+    <string name="profile_required">Enter a value</string>
+    <string name="profile_invalid_number">Enter a valid, non-negative number</string>
+    <string name="profile_invalid_year">Enter a year from 1900 to the current year</string>
+    <string name="profile_price_optional">Purchase price (optional)</string>
+    <plurals name="interval_days"><item quantity="one">%1$d day</item><item quantity="other">%1$d days</item></plurals>
+    <plurals name="interval_months"><item quantity="one">%1$d month</item><item quantity="other">%1$d months</item></plurals>
+    <plurals name="interval_years"><item quantity="one">%1$d year</item><item quantity="other">%1$d years</item></plurals>
+    <string name="profile_edit_purchase">Edit purchase details</string>
+<string name="profile_tires">Tires</string><string name="profile_edit_tires">Edit tires</string>    <string name="bike_empty_title">Your garage</string>
+    <string name="bike_empty_body">Add your first motorcycle to track its distance, maintenance and modifications</string>
+    <string name="gear_empty_title">Your gear</string>
+    <string name="gear_empty_body">Add your first piece of gear to keep its details and photos</string>
+</resources>

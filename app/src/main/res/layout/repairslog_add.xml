@@ -1,170 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gwynn7.motolog.Fragments.RepairsLog.RepairsLogAddFragment">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/iv_repair_image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="20dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/repairs_log"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_repair"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/et_repair_type"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="@string/maintenance_type"
-            android:textSize="28dp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:inputType="textCapSentences"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_repair_image" />
-
-        <TextView
-            android:id="@+id/textView_repair_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:textAlignment="center"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            android:text="@string/type"
-            android:textColor="@color/dark_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_repair_type" />
-
-        <EditText
-            android:id="@+id/et_repair_notes"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:hint="@string/maintenance_notes"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:inputType="textCapSentences"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_repair_type" />
-
-        <TextView
-            android:id="@+id/textView_repair_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:textAlignment="center"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            android:text="@string/notes"
-            android:textColor="@color/dark_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_repair_notes" />
-
-        <EditText
-            android:id="@+id/et_repair_distance"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:hint="20000"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:digits="0123456789"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_repair_description" />
-
-        <TextView
-            android:id="@+id/textView_repair_distance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:textAlignment="center"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            android:textColor="@color/dark_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_repair_distance" />
-
-        <EditText
-            android:id="@+id/et_repair_price"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:hint="100"
-            android:text="0"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            android:inputType="numberDecimal"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_repair_distance" />
-
-        <TextView
-            android:id="@+id/textView_repair_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:textAlignment="center"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            android:text="@string/price"
-            android:textColor="@color/dark_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_repair_price" />
-
-        <DatePicker
-            android:id="@+id/dp_repair_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:spinnersShown="true"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_repair_price" />
-
-        <Button
-            android:id="@+id/bt_deleteRepair"
-            android:layout_width="200dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="30dp"
-            android:text="@string/delete_log"
-            android:textSize="16dp"
-            android:backgroundTint="@color/dark_red"
-            android:textColor="@color/white"
-            app:layout_constraintTop_toBottomOf="@+id/dp_repair_date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    android:fillViewport="true">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp" android:paddingBottom="32dp">
+<TextView android:id="@+id/editor_heading" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+<com.google.android.material.textfield.TextInputLayout android:id="@+id/category_input" style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:hint="@string/log_category">
+<com.google.android.material.textfield.MaterialAutoCompleteTextView android:id="@+id/category" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="none" android:minHeight="56dp" android:maxLines="1" android:ellipsize="end" />
+</com.google.android.material.textfield.TextInputLayout>
+<com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:hint="@string/log_title" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+<com.google.android.material.textfield.TextInputEditText android:id="@+id/et_repair_type" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textCapSentences" />
+</com.google.android.material.textfield.TextInputLayout><com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:hint="@string/log_notes_optional" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+<com.google.android.material.textfield.TextInputEditText android:id="@+id/et_repair_notes" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textCapSentences|textMultiLine" android:minLines="3" android:gravity="top"/>
+</com.google.android.material.textfield.TextInputLayout><com.google.android.material.textfield.TextInputLayout android:id="@+id/odometer_input" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:hint="@string/log_odometer" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+<com.google.android.material.textfield.TextInputEditText android:id="@+id/et_repair_distance" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" />
+</com.google.android.material.textfield.TextInputLayout><com.google.android.material.textfield.TextInputLayout android:id="@+id/cost_input" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:hint="@string/log_cost" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+<com.google.android.material.textfield.TextInputEditText android:id="@+id/et_repair_price" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" />
+</com.google.android.material.textfield.TextInputLayout>
+<com.google.android.material.button.MaterialButton android:id="@+id/log_date" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" android:layout_marginTop="20dp" android:text="@string/date" />
+<com.google.android.material.button.MaterialButton android:id="@+id/save_log" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" android:layout_marginTop="20dp" android:text="@string/log_save" />
+<com.google.android.material.button.MaterialButton android:id="@+id/bt_deleteRepair" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/delete_log" android:textColor="?attr/colorError" android:visibility="gone" />
+</LinearLayout></androidx.core.widget.NestedScrollView>

@@ -1,0 +1,44 @@
+<resources>
+    <string name="log_distance_initial">+%1$s %2$s dal chilometraggio iniziale</string>
+    <string name="log_distance_same_day">+%1$s %2$s nello stesso giorno</string>
+    <string name="interval_separator">", "</string>
+<string name="profile_details">Dettagli</string>
+    <string name="profile_photo_help">Foto facoltativa. Tocca per sceglierla, ritagliarla o rimuoverla.</string>
+    <string name="profile_basics">Informazioni principali</string>
+    <string name="profile_ownership">Acquisto</string>
+    <string name="profile_alias">Soprannome (facoltativo)</string>
+    <string name="profile_initial_odometer">Chilometraggio all’acquisto (%1$s)</string>
+    <string name="profile_initial_help">Valore iniziale, prima delle registrazioni di distanza.</string>
+    <string name="profile_personal_distance">Percorsi con te</string>
+    <string name="profile_odometer">Chilometraggio totale</string>
+    <string name="profile_odometer_value">Chilometraggio · %1$s %2$s</string>
+<string name="profile_info_help">Scadenze, specifiche e spese</string>
+    <string name="profile_deadlines">Scadenze</string>
+    <string name="profile_deadline_help">Aggiorna le date per vedere le prossime scadenze.</string>
+    <string name="profile_due_today">Scade oggi</string>
+    <string name="profile_due_in">Scade tra %1$s</string>
+    <string name="profile_overdue">Scaduto da %1$s</string>
+    <string name="profile_no_date">Nessuna data impostata</string>
+    <string name="profile_choose_date">Scegli data</string>
+    <string name="profile_clear_date">Rimuovi data</string>
+    <string name="profile_clear_named_date">Rimuovi la data: %1$s</string>
+    <string name="profile_specs">Specifiche motore</string>
+<string name="profile_spending">Riepilogo spese</string>
+    <string name="profile_purchase_price">Prezzo di acquisto</string>
+    <string name="profile_purchase_date">Data di acquisto: %1$s</string>
+    <string name="profile_owned_for">Acquistato da %1$s</string>
+    <string name="profile_purchased_today">Acquistato oggi</string>
+    <string name="profile_optional_specs">Dettagli facoltativi. Lascia vuoti i valori non noti.</string>
+    <string name="profile_required">Inserisci un valore</string>
+    <string name="profile_invalid_number">Inserisci un numero valido non negativo</string>
+    <string name="profile_invalid_year">Inserisci un anno dal 1900 a quello attuale</string>
+    <string name="profile_price_optional">Prezzo di acquisto (facoltativo)</string>
+    <plurals name="interval_days"><item quantity="one">%1$d giorno</item><item quantity="many">%1$d giorni</item><item quantity="other">%1$d giorni</item></plurals>
+    <plurals name="interval_months"><item quantity="one">%1$d mese</item><item quantity="many">%1$d mesi</item><item quantity="other">%1$d mesi</item></plurals>
+    <plurals name="interval_years"><item quantity="one">%1$d anno</item><item quantity="many">%1$d anni</item><item quantity="other">%1$d anni</item></plurals>
+    <string name="profile_edit_purchase">Modifica dettagli di acquisto</string>
+<string name="profile_tires">Pneumatici</string><string name="profile_edit_tires">Modifica pneumatici</string>    <string name="bike_empty_title">Il tuo garage</string>
+    <string name="bike_empty_body">Aggiungi la tua prima moto per tenere traccia di distanza, manutenzione e modifiche</string>
+    <string name="gear_empty_title">Il tuo abbigliamento</string>
+    <string name="gear_empty_body">Aggiungi il tuo primo capo di abbigliamento per raccogliere foto e dettagli</string>
+</resources>

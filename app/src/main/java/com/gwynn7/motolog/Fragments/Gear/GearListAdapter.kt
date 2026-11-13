@@ -7,13 +7,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gwynn7.motolog.Models.Gear
+import com.gwynn7.motolog.photos.PhotoLoader
 import com.gwynn7.motolog.R
-import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.databinding.GearRowBinding
 import com.gwynn7.motolog.longToDateString
-import java.io.File
+import com.gwynn7.motolog.ui.formatMoney
 
 class GearListAdapter : ListAdapter<Gear, GearListAdapter.ViewHolder>(DiffCallback()) {
+
+    init { stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY }
 
     class ViewHolder(val binding: GearRowBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -30,33 +32,33 @@ class GearListAdapter : ListAdapter<Gear, GearListAdapter.ViewHolder>(DiffCallba
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentItem = getItem(position)
         with(holder.binding) {
-            twGearModel.isSelected = true
             twGearModel.text = currentItem.model
 
             twGearManufacturer.text = currentItem.manufacturer
-            twGearDate.text = String.format(
-                "${root.resources.getString(R.string.date)}: %s", longToDateString(currentItem.date)
-            )
+            twGearDate.text = root.context.getString(R.string.profile_purchase_date, longToDateString(currentItem.date))
 
-            val price = String.format("%.2f%s", currentItem.price, UnitHelper.getCurrency())
+            val price = formatMoney(currentItem.price)
             twGearPrice.text = price
 
-            if (currentItem.listImage?.path?.let(::File)?.exists() == true) {
-                gearImage.setImageURI(currentItem.listImage)
-            } else {
-                gearImage.setImageResource(R.drawable.helmet_list)
-            }
+            PhotoLoader.load(gearImage, currentItem.listImage, R.drawable.helmet_list, 400)
 
             cvGearRow.setOnClickListener {
                 val action = GearListFragmentDirections.gearlistToGearshow(currentItem)
                 root.findNavController().navigate(action)
             }
 
+            editProfile.setOnClickListener {
+                root.findNavController().navigate(GearListFragmentDirections.gearlistToGearadd(currentItem))
+            }
             cvGearRow.setOnLongClickListener {
                 val action = GearListFragmentDirections.gearlistToGearadd(currentItem)
                 root.findNavController().navigate(action)
                 true
             }
         }
+    }
+    override fun onViewRecycled(holder: ViewHolder) {
+        PhotoLoader.clear(holder.binding.gearImage)
+        super.onViewRecycled(holder)
     }
 }

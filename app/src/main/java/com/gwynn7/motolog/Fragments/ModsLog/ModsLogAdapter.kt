@@ -2,7 +2,6 @@ package com.gwynn7.motolog.Fragments.ModsLog
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,11 +10,12 @@ import com.gwynn7.motolog.R
 import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.databinding.ModslogRowBinding
 import com.gwynn7.motolog.longToDateString
-import com.gwynn7.motolog.repairColors
 
 class ModsLogAdapter(
     private val onLogClicked: (ModsLog) -> Unit
 ) : ListAdapter<ModsLog, ModsLogAdapter.ViewHolder>(DiffCallback()) {
+    init { stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY }
+
     class ViewHolder(val binding: ModslogRowBinding) : RecyclerView.ViewHolder(binding.root)
 
     class DiffCallback : DiffUtil.ItemCallback<ModsLog>() {
@@ -39,7 +39,8 @@ class ModsLogAdapter(
             twModPrice.text = root.context.getString(R.string.price) + ": %.2f%s".format(
                 currentItem.price, UnitHelper.getCurrency()
             )
-            modImage.setColorFilter(ContextCompat.getColor(root.context, repairColors[position % repairColors.size]))
+            twModDescription.visibility = if (currentItem.description.isBlank()) android.view.View.GONE else android.view.View.VISIBLE
+            editLog.setOnClickListener { onLogClicked(currentItem) }
             cvModsRow.setOnClickListener { onLogClicked(currentItem) }
         }
     }

@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:title="@string/motorcycles"
-        android:id="@+id/motorcycle_nav"
-        android:contentDescription="@string/motorcycles"
-        android:icon="@drawable/ic_bike"/>
-    <item android:title="@string/gear"
-        android:id="@+id/gear_nav"
-        android:contentDescription="@string/gear"
-        android:icon="@drawable/ic_gear_logo"/>
-    <item android:title="@string/settings"
-        android:id="@+id/settings_nav"
-        android:contentDescription="@string/settings"
-        android:icon="@drawable/ic_settings"/>
+    <item android:id="@+id/motorcycle_nav" android:title="@string/garage" android:icon="@drawable/ic_bike" />
+    <item android:id="@+id/gear_nav" android:title="@string/gear" android:icon="@drawable/ic_gear_logo" />
+    <item android:id="@+id/start_ride_placeholder" android:title="@string/ride_tab" android:icon="@drawable/ic_ride" android:checkable="false" />
+    <item android:id="@+id/rides_nav" android:title="@string/rides_title" android:icon="@drawable/ic_route" />
+    <item android:id="@+id/settings_nav" android:title="@string/settings" android:icon="@drawable/ic_settings" />
 </menu>

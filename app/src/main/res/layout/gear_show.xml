@@ -1,188 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.gwynn7.motolog.Fragments.Gear.GearShowFragment"
-    android:id="@+id/gear_show_view"
-    android:visibility="invisible">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_gear_image_show"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="20dp"
-            app:cardBackgroundColor="@android:color/transparent"
-            app:cardCornerRadius="115dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/iv_gear_image_show"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/gear"
-                android:longClickable="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/helmet_show" />
+<?xml version='1.0' encoding='utf-8'?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/gear_show_view" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:visibility="invisible">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp" android:paddingBottom="32dp">
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:layout_gravity="center_horizontal" android:orientation="vertical">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:id="@+id/tw_gear_model" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceHeadlineSmall" android:gravity="center" />
+                <TextView android:id="@+id/tw_gear_manufacturer" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceLabelLarge" android:textColor="?android:attr/textColorSecondary" android:layout_marginTop="4dp" android:gravity="center" />
+            </LinearLayout>
+            <com.google.android.material.imageview.ShapeableImageView android:id="@+id/iv_gear_image_show" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@android:color/transparent" android:scaleType="fitCenter" android:src="@drawable/helmet_show" android:contentDescription="@string/profile_details" android:layout_gravity="center_horizontal" android:adjustViewBounds="true" android:maxHeight="420dp" android:maxWidth="600dp" app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Image" />
+        </LinearLayout>
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard" app:cardBackgroundColor="@color/dark_gray" app:cardCornerRadius="20dp" app:cardElevation="2dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceTitleLarge" android:text="@string/profile_ownership" android:gravity="center" />
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="14dp">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceLabelMedium" android:text="@string/profile_purchase_price" android:textColor="@color/less_dark_white" android:gravity="center" />
+                    <TextView android:id="@+id/tw_gear_price" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceTitleMedium" android:layout_marginTop="3dp" android:gravity="center" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="14dp">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceLabelMedium" android:text="@string/day_of_purchase" android:textColor="@color/less_dark_white" android:gravity="center" />
+                    <TextView android:id="@+id/tw_gear_date" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceTitleMedium" android:layout_marginTop="3dp" android:gravity="center" />
+                </LinearLayout>
+                <TextView android:id="@+id/gear_age" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceBodyMedium" android:textColor="#7DD9C6" android:layout_marginTop="12dp" android:gravity="center" />
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/tw_gear_manufacturer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="30dp"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="26dp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cv_gear_image_show" />
-
-        <TextView
-            android:id="@+id/textView_gear_manufacturer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:text="@string/manufacturer"
-            android:textAlignment="center"
-            android:textColor="@color/dark_white"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tw_gear_manufacturer" />
-
-        <View
-            android:id="@+id/divider_manufacturer"
-            android:layout_width="300dp"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            android:layout_marginTop="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView_gear_manufacturer"/>
-
-        <TextView
-            android:id="@+id/tw_gear_model"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="15dp"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="26dp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_manufacturer" />
-
-        <TextView
-            android:id="@+id/textView_gear_model"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:text="@string/model"
-            android:textAlignment="center"
-            android:textColor="@color/dark_white"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tw_gear_model" />
-
-        <View
-            android:id="@+id/divider_model"
-            android:layout_width="300dp"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            android:layout_marginTop="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView_gear_model"/>
-
-        <TextView
-            android:id="@+id/tw_gear_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="15dp"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_model" />
-
-        <TextView
-            android:id="@+id/textView_gear_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:text="@string/price"
-            android:textAlignment="center"
-            android:textColor="@color/dark_white"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tw_gear_price" />
-
-        <View
-            android:id="@+id/divider_price"
-            android:layout_width="300dp"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            android:layout_marginTop="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView_gear_price"/>
-
-        <TextView
-            android:id="@+id/tw_gear_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="15dp"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_price" />
-
-        <TextView
-            android:id="@+id/textView_gear_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:text="@string/day_of_purchase"
-            android:textAlignment="center"
-            android:textColor="@color/dark_white"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tw_gear_date" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+        <com.google.android.material.button.MaterialButton android:id="@+id/edit_gear" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/gear_edit" android:layout_marginTop="24dp" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

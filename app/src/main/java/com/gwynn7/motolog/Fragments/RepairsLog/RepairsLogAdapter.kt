@@ -2,7 +2,6 @@ package com.gwynn7.motolog.Fragments.RepairsLog
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,11 +11,15 @@ import com.gwynn7.motolog.UnitHelper
 import com.gwynn7.motolog.databinding.RepairslogRowBinding
 import com.gwynn7.motolog.formatThousand
 import com.gwynn7.motolog.longToDateString
-import com.gwynn7.motolog.repairColors
 
 class RepairsLogAdapter(
-    private val onLogClicked: (RepairsLog) -> Unit
+    private val onLogClicked: (RepairsLog) -> Unit,
+    private val onEmptyChanged: (Boolean) -> Unit = {}
 ) : ListAdapter<RepairsLog, RepairsLogAdapter.ViewHolder>(DiffCallback()) {
+    private var selectedType = -1
+    private var oldestFirst = false
+    init { stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY }
+
     private var allLogs: List<RepairsLog> = emptyList()
 
     class ViewHolder(val binding: RepairslogRowBinding) : RecyclerView.ViewHolder(binding.root)
@@ -38,9 +41,10 @@ class RepairsLogAdapter(
             twRepairNotes.text = currentItem.notes
             twRepairNotes.isSelected = true
             twRepairDate.text = longToDateString(currentItem.date)
-            repairImage.setColorFilter(
-                ContextCompat.getColor(root.context, repairColors[currentItem.typeIndex.coerceIn(repairColors.indices)])
-            )
+            repairImage.setImageResource(repairCategoryIcon(currentItem.typeIndex))
+            repairCategory.text = root.resources.getStringArray(R.array.repair_types).getOrElse(currentItem.typeIndex) { root.context.getString(R.string.type) }
+            twRepairNotes.visibility = if (currentItem.notes.isBlank()) android.view.View.GONE else android.view.View.VISIBLE
+            editLog.setOnClickListener { onLogClicked(currentItem) }
             twRepairPrice.text = root.context.getString(R.string.price) + ": %.2f%s".format(
                 currentItem.price, UnitHelper.getCurrency()
             )
@@ -51,14 +55,20 @@ class RepairsLogAdapter(
 
     fun submitLogs(logs: List<RepairsLog>) {
         allLogs = logs
-        submitList(logs)
+        filter(selectedType, oldestFirst)
     }
 
     fun filter(repairTypeIndex: Int, oldestFirst: Boolean) {
+        selectedType = repairTypeIndex
+        this.oldestFirst = oldestFirst
         val logs = allLogs
             .filter { repairTypeIndex == NO_FILTER || it.typeIndex == repairTypeIndex }
             .let { if (oldestFirst) it.reversed() else it }
         submitList(logs)
+    }
+
+    override fun onCurrentListChanged(previousList: MutableList<RepairsLog>, currentList: MutableList<RepairsLog>) {
+        onEmptyChanged(currentList.isEmpty())
     }
 
     private companion object {

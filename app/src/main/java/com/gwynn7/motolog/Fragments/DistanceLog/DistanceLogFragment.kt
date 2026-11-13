@@ -1,11 +1,12 @@
 package com.gwynn7.motolog.Fragments.DistanceLog
 
 import android.os.Bundle
+import com.gwynn7.motolog.R
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.navigation.navGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gwynn7.motolog.ViewModel.MotorcycleViewModel
@@ -15,7 +16,7 @@ import com.gwynn7.motolog.stop
 class DistanceLogFragment : Fragment() {
     private var _binding: DistancelogListBinding? = null
     private val binding get() = _binding!!
-    private val motorcycleViewModel: MotorcycleViewModel by activityViewModels()
+    private val motorcycleViewModel: MotorcycleViewModel by navGraphViewModels(R.id.bike_nav)
     private lateinit var adapter: DistanceLogAdapter
 
     override fun onCreateView(
@@ -53,6 +54,7 @@ class DistanceLogFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rwDistancelogs.adapter = null
         super.onDestroyView()
         _binding = null
     }

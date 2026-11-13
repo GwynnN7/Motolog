@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.navigation.navGraphViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,9 +22,10 @@ import com.gwynn7.motolog.stop
 class RepairsLogFragment : Fragment(), MenuProvider {
     private var _binding: RepairslogListBinding? = null
     private val binding get() = _binding!!
-    private val motorcycleViewModel: MotorcycleViewModel by activityViewModels()
+    private val motorcycleViewModel: MotorcycleViewModel by navGraphViewModels(R.id.bike_nav)
     private lateinit var adapter: RepairsLogAdapter
     private var filterIndex = 0
+    private var oldestFirst = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -40,17 +41,28 @@ class RepairsLogFragment : Fragment(), MenuProvider {
             return
         }
 
-        adapter = RepairsLogAdapter { log -> chooseRepairType(bikeId, log.id, log.typeIndex) }
+        filterIndex = savedInstanceState?.getInt("filterIndex") ?: filterIndex
+        oldestFirst = savedInstanceState?.getBoolean("oldestFirst") ?: oldestFirst
+        adapter = RepairsLogAdapter(onLogClicked = { log ->
+            findNavController().navigate(RepairsLogFragmentDirections.repairslistToRepairsadd(bikeId, log.typeIndex, log.id))
+        }, onEmptyChanged = { empty ->
+            _binding?.placeholder?.apply {
+                visibility = if (empty) View.VISIBLE else View.GONE
+                setText(if (filterIndex == 0) R.string.add_first_repair else R.string.log_no_matching_entries)
+            }
+        })
+        adapter.filter(filterIndex - 1, oldestFirst)
         binding.rwRepairs.layoutManager = LinearLayoutManager(requireContext())
         binding.rwRepairs.adapter = adapter
-        binding.fabAddRepairsLog.setOnClickListener { chooseRepairType(bikeId) }
+        binding.fabAddRepairsLog.setOnClickListener {
+            findNavController().navigate(RepairsLogFragmentDirections.repairslistToRepairsadd(bikeId))
+        }
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         motorcycleViewModel.getMotorcycle(bikeId).observe(viewLifecycleOwner) { bike ->
             if (bike == null) stop(activity)
         }
         motorcycleViewModel.getRepairsLogs(bikeId).observe(viewLifecycleOwner) { logs ->
-            binding.placeholder.visibility = if (logs.isEmpty()) View.VISIBLE else View.GONE
             adapter.submitLogs(logs)
         }
     }
@@ -67,34 +79,24 @@ class RepairsLogFragment : Fragment(), MenuProvider {
         MaterialAlertDialogBuilder(requireContext())
             .setSingleChoiceItems(filterList.toTypedArray(), filterIndex) { _, which -> filterIndex = which }
             .setTitle(R.string.filter_type)
-            .setNegativeButton(R.string.from_old) { _, _ -> adapter.filter(filterIndex - 1, oldestFirst = true) }
-            .setPositiveButton(R.string.from_new) { _, _ -> adapter.filter(filterIndex - 1, oldestFirst = false) }
+            .setNegativeButton(R.string.from_old) { _, _ -> oldestFirst = true; adapter.filter(filterIndex - 1, oldestFirst) }
+            .setPositiveButton(R.string.from_new) { _, _ -> oldestFirst = false; adapter.filter(filterIndex - 1, oldestFirst) }
             .show()
         return true
     }
 
-    private fun chooseRepairType(bikeId: Int, logId: Int = NO_LOG_ID, selectedType: Int = 0) {
-        var repairType = selectedType
-        MaterialAlertDialogBuilder(requireContext())
-            .setNegativeButton(R.string.back, null)
-            .setSingleChoiceItems(resources.getStringArray(R.array.repair_types), selectedType) { _, which ->
-                repairType = which
-            }
-            .setTitle(R.string.choose_repair_type)
-            .setPositiveButton(if (logId == NO_LOG_ID) R.string.add_log else R.string.edit) { _, _ ->
-                findNavController().navigate(
-                    RepairsLogFragmentDirections.repairslistToRepairsadd(bikeId, repairType, logId)
-                )
-            }
-            .show()
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt("filterIndex", filterIndex)
+        outState.putBoolean("oldestFirst", oldestFirst)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
+        binding.rwRepairs.adapter = null
         super.onDestroyView()
         _binding = null
     }
 
     private companion object {
-        const val NO_LOG_ID = -1
     }
 }

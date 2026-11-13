@@ -15,7 +15,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        app:cardBackgroundColor="@color/dark_gray"
+        app:cardBackgroundColor="@color/dark_gray" android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard"
         app:cardCornerRadius="25dp"
         app:cardElevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,9 +33,9 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                 android:layout_marginTop="15dp"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:text="@string/language"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                     android:layout_height="wrap_content"
                     android:text="Italiano"
                     android:textStyle="bold"
-                    android:textSize="20dp"/>
+                    android:textSize="20sp"/>
 
                 <RadioButton
                     android:id="@+id/rb_english"
@@ -65,7 +65,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                     android:layout_height="wrap_content"
                     android:text="English"
                     android:textStyle="bold"
-                    android:textSize="20dp"/>
+                    android:textSize="20sp"/>
             </RadioGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -76,7 +76,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        app:cardBackgroundColor="@color/dark_gray"
+        app:cardBackgroundColor="@color/dark_gray" android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard"
         app:cardCornerRadius="25dp"
         app:cardElevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,9 +94,9 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                 android:layout_marginTop="15dp"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:text="@string/distance"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +118,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                     android:layout_height="wrap_content"
                     android:text="@string/kilometers"
                     android:textStyle="bold"
-                    android:textSize="20dp"/>
+                    android:textSize="20sp"/>
 
                 <RadioButton
                     android:id="@+id/rb_miles"
@@ -126,7 +126,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                     android:layout_height="wrap_content"
                     android:text="@string/miles"
                     android:textStyle="bold"
-                    android:textSize="20dp"/>
+                    android:textSize="20sp"/>
             </RadioGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -137,7 +137,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        app:cardBackgroundColor="@color/dark_gray"
+        app:cardBackgroundColor="@color/dark_gray" android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard"
         app:cardCornerRadius="25dp"
         app:cardElevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -155,9 +155,9 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                 android:layout_marginTop="15dp"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 android:text="@string/currency"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -179,7 +179,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                     android:layout_height="wrap_content"
                     android:text="EUR (€)"
                     android:textStyle="bold"
-                    android:textSize="20dp"/>
+                    android:textSize="20sp"/>
 
                 <RadioButton
                     android:id="@+id/rb_usd"
@@ -187,7 +187,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                     android:layout_height="wrap_content"
                     android:text="USD ($)"
                     android:textStyle="bold"
-                    android:textSize="20dp"/>
+                    android:textSize="20sp"/>
 
                 <RadioButton
                     android:id="@+id/rb_gbp"
@@ -195,7 +195,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                     android:layout_height="wrap_content"
                     android:text="GBP (£)"
                     android:textStyle="bold"
-                    android:textSize="20dp"/>
+                    android:textSize="20sp"/>
 
                 <RadioButton
                     android:id="@+id/rb_jpy"
@@ -203,7 +203,7 @@ tools:context="com.gwynn7.motolog.Fragments.Settings.SettingsFragment">
                     android:layout_height="wrap_content"
                     android:text="JPY (¥)"
                     android:textStyle="bold"
-                    android:textSize="20dp"/>
+                    android:textSize="20sp"/>
             </RadioGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

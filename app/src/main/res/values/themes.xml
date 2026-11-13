@@ -1,5 +1,8 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.MotoLog" parent="Theme.Material3.DayNight">
+<resources>
+    <style name="Base.Theme.MotoLog" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#006B5F</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#EAF4F0</item>
         <item name="colorOnBackground">@color/black</item>
     </style>
 
@@ -8,5 +11,17 @@
     <style name="ShapeAppearanceOverlay.App.Image" parent="">
         <item name="cornerSize">20dp</item>
         <item name="cornerFamily">rounded</item>
+    </style>
+    <style name="ThemeOverlay.MotoLog.CharcoalCard" parent="">
+        <item name="colorSurface">@color/dark_gray</item>
+        <item name="colorSurfaceVariant">@color/dark_gray</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnSurfaceVariant">@color/less_dark_white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/less_dark_white</item>
+        <item name="colorPrimary">#7DD9C6</item>
+        <item name="colorOnPrimary">#00382F</item>
+        <item name="colorError">#FFB4AB</item>
+        <item name="colorOnError">#690005</item>
     </style>
 </resources>

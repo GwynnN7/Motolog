@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:theme="@style/ThemeOverlay.MotoLog.CharcoalCard" app:cardBackgroundColor="@color/dark_gray" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:clickable="true" android:focusable="true" app:cardCornerRadius="20dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="0dp" android:orientation="vertical">
+        <com.gwynn7.motolog.rides.ui.RouteMapPanel android:id="@+id/route_preview" android:layout_width="match_parent" android:layout_height="180dp" android:importantForAccessibility="noHideDescendants" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+            <TextView android:id="@+id/bike" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceTitleLarge" android:gravity="center" />
+            <TextView android:id="@+id/date" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceBodyMedium" android:gravity="center" />
+            <TextView android:id="@+id/metrics" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:textAppearance="?attr/textAppearanceTitleMedium" android:gravity="center" />
+            <TextView android:id="@+id/status" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textAppearance="?attr/textAppearanceLabelLarge" android:textColor="?attr/colorPrimary" android:gravity="center" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

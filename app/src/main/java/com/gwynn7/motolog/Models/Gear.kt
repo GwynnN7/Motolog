@@ -2,10 +2,12 @@ package com.gwynn7.motolog.Models
 
 import android.net.Uri
 import android.os.Parcelable
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 @Entity(tableName = "gear")
 data class Gear(
